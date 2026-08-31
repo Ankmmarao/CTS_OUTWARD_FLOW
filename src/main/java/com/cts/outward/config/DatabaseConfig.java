@@ -10,12 +10,12 @@ public final class DatabaseConfig {
             "org.postgresql.Driver";
 
     public static final String URL =
-            "jdbc:postgresql://localhost:5432/superDB";
+            "jdbc:postgresql://localhost:5432/postgres";
 
     public static final String USERNAME =
             "postgres";
 
     public static final String PASSWORD =
-            "postgres";
+            "12345";
 }
 

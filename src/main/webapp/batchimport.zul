@@ -1,0 +1,72 @@
+<?page title="Batch Import"?>
+
+<zk>
+
+    <window
+        title="Batch Import"
+        border="normal"
+        width="650px"
+        apply="com.cts.outward.controller.capture.BatchImportController">
+
+        <vlayout
+            spacing="15px"
+            style="padding:30px;">
+
+            <label
+                value="Import Batch XML"
+                style="font-size:20px; font-weight:bold;"/>
+
+            <separator/>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="Batch Number"
+                    width="150px"/>
+
+                <textbox
+                    id="batchNumber"
+                    readonly="true"
+                    width="300px"/>
+
+            </hlayout>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="XML File"
+                    width="150px"/>
+
+                <button
+                    id="chooseFileButton"
+                    label="Choose XML File"
+                    upload="true"
+                    width="150px"/>
+
+            </hlayout>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="Selected File"
+                    width="150px"/>
+
+                <label
+                    id="selectedFile"
+                    value="No file selected"
+                    width="300px"/>
+
+            </hlayout>
+
+            <separator/>
+
+            <button
+                id="importButton"
+                label="Import XML"
+                width="150px"/>
+
+        </vlayout>
+
+    </window>
+
+</zk>

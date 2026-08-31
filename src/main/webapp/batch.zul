@@ -1,0 +1,73 @@
+<?page title="Batch Capture"?>
+
+<zk>
+
+    <window
+        title="Batch Capture"
+        border="normal"
+        width="600px"
+        apply="com.cts.outward.controller.capture.BatchCaptureController">
+
+        <vlayout
+            spacing="15px"
+            style="padding:30px;">
+
+            <label
+                value="Create Batch"
+                style="font-size:20px; font-weight:bold;"/>
+
+            <separator/>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="Branch Code"
+                    width="150px"/>
+
+                <textbox
+                    id="branchCode"
+                    value="0090"
+                    readonly="true"
+                    width="300px"/>
+
+            </hlayout>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="Branch Name"
+                    width="150px"/>
+
+                <textbox
+                    id="branchName"
+                    value="Angamaly Branch"
+                    readonly="true"
+                    width="300px"/>
+
+            </hlayout>
+
+            <hlayout spacing="10px">
+
+                <label
+                    value="Total Cheques"
+                    width="150px"/>
+
+                <intbox
+                    id="totalCheque"
+                    value="10"
+                    width="300px"/>
+
+            </hlayout>
+
+            <separator/>
+
+            <button
+                id="createBatchButton"
+                label="Create Batch"
+                width="150px"/>
+
+        </vlayout>
+
+    </window>
+
+</zk>

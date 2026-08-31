@@ -5,11 +5,17 @@ import java.time.LocalDateTime;
 public class Batch {
 
     private String batchNumber;
+
     private String branchCode;
+
     private String branchName;
+
     private LocalDateTime captureDate;
+
     private Integer createdBy;
+
     private Integer totalCheque;
+
     private String status;
 
     public Batch() {
