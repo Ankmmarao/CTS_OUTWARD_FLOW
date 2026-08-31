@@ -10,19 +10,22 @@ import java.sql.SQLException;
 
 public class ChequeRepository {
 
-    private static final String INSERT_CHEQUE =
-            "INSERT INTO cheque " +
-            "(cheque_number, batch_number, account_number, branch_code, " +
-            "payee_name, amount, front_image_path, back_image_path) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
     public void save(Cheque cheque) throws SQLException {
 
-        try (Connection connection =
-                     DatabaseConnection.getConnection();
+        String sql =
+                "INSERT INTO cheque " +
+                "(cheque_number, batch_number, account_number, " +
+                "branch_code, payee_name, amount, " +
+                "front_image_path, back_image_path) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-             PreparedStatement statement =
-                     connection.prepareStatement(INSERT_CHEQUE)) {
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
 
             statement.setString(
                     1,
