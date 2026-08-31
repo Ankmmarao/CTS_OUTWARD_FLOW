@@ -1,70 +1,268 @@
 <?page title="Batch Capture"?>
 
+<?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
+
 <zk>
 
     <window
-        title="Batch Capture"
-        border="normal"
-        width="600px"
+        border="none"
+        width="100%"
+        height="100%"
         apply="com.cts.outward.controller.capture.BatchCaptureController">
 
         <vlayout
-            spacing="15px"
-            style="padding:30px;">
+            spacing="0"
+            width="100%"
+            height="100%"
+            sclass="capture-page">
 
-            <label
-                value="Create Batch"
-                style="font-size:20px; font-weight:bold;"/>
 
-            <separator/>
+            <!-- ================= HEADER ================= -->
 
-            <hlayout spacing="10px">
+            <div sclass="top-header">
 
-                <label
-                    value="Branch Code"
-                    width="150px"/>
+                <hlayout
+                    width="100%"
+                    height="70px"
+                    valign="middle">
 
-                <textbox
-                    id="branchCode"
-                    value="0090"
-                    readonly="true"
-                    width="300px"/>
+                    <label
+                        value="☰"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="CTS OUTWARD / CAPTURE OPERATOR"
+                        sclass="header-title"/>
+
+                    <div hflex="1"/>
+
+                    <label
+                        value="▣  Date : 21-06-2025"
+                        sclass="header-info"/>
+
+                    <label
+                        value="◷  Last Login : 21-06-2025 09:15 AM"
+                        sclass="header-info"/>
+
+                    <label
+                        value="♧"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="◯"
+                        sclass="header-icon"/>
+
+                </hlayout>
+
+            </div>
+
+
+            <!-- ================= BODY ================= -->
+
+            <hlayout
+                width="100%"
+                height="calc(100% - 70px)"
+                spacing="0">
+
+
+                <!-- ================= SIDEBAR ================= -->
+
+                <vlayout
+                    spacing="5px"
+                    sclass="sidebar">
+
+
+                    <!-- BATCH CAPTURE -->
+
+                    <div
+                        sclass="sidebar-item sidebar-item-selected">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="⌗"
+                                sclass="sidebar-icon-selected"/>
+
+                            <label
+                                value="Batch Capture"
+                                sclass="sidebar-text-selected"/>
+
+                        </hlayout>
+
+                    </div>
+
+
+                    <!-- SUBMITTED BATCHES -->
+
+                    <div
+                        sclass="sidebar-item">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="☷"
+                                sclass="sidebar-icon"/>
+
+                            <label
+                                value="Submitted Batches"
+                                sclass="sidebar-text"/>
+
+                        </hlayout>
+
+                    </div>
+
+                </vlayout>
+
+
+                <!-- ================= MAIN CONTENT ================= -->
+
+                <vlayout
+                    hflex="1"
+                    spacing="20px"
+                    sclass="main-content">
+
+
+                    <!-- PAGE TITLE -->
+
+                    <label
+                        value="Batch Capture"
+                        sclass="page-title"/>
+
+
+                    <!-- ================= CREATE BATCH CARD ================= -->
+
+                    <groupbox
+                        sclass="batch-card">
+
+                        <vlayout
+                            spacing="20px"
+                            style="padding:30px;">
+
+
+                            <!-- CARD TITLE -->
+
+                            <label
+                                value="Create New Batch"
+                                sclass="card-title"/>
+
+                            <separator/>
+
+
+                            <!-- TOTAL CHEQUES -->
+
+                            <vlayout spacing="8px">
+
+                                <label
+                                    value="Total Number of Cheques *"
+                                    sclass="form-label"/>
+
+                                <intbox
+                                    id="totalCheque"
+                                    width="480px"
+                                    height="42px"
+                                    placeholder="Enter total number of cheques"
+                                    sclass="form-input"/>
+
+                            </vlayout>
+
+
+                            <!-- BRANCH DETAILS -->
+
+                            <hlayout
+                                spacing="35px"
+                                width="100%">
+
+
+                                <!-- BRANCH CODE -->
+
+                                <vlayout
+                                    hflex="1"
+                                    spacing="8px">
+
+                                    <label
+                                        value="Branch Code *"
+                                        sclass="form-label"/>
+
+                                    <textbox
+                                        id="branchCode"
+                                        value="BR001"
+                                        readonly="true"
+                                        width="100%"
+                                        height="42px"
+                                        sclass="readonly-input"/>
+
+                                </vlayout>
+
+
+                                <!-- BRANCH NAME -->
+
+                                <vlayout
+                                    hflex="1"
+                                    spacing="8px">
+
+                                    <label
+                                        value="Branch Name"
+                                        sclass="form-label"/>
+
+                                    <textbox
+                                        id="branchName"
+                                        value="Hyderabad Main Branch"
+                                        readonly="true"
+                                        width="100%"
+                                        height="42px"
+                                        sclass="readonly-input"/>
+
+                                </vlayout>
+
+                            </hlayout>
+
+
+                            <!-- ================= CREATE BUTTON ================= -->
+
+                            <div
+                                width="100%"
+                                style="text-align:center;
+                                       padding-top:15px;">
+
+                                <button
+                                    id="createBatchButton"
+                                    label="CREATE BATCH"
+                                    sclass="create-batch-button"/>
+
+                            </div>
+
+
+                            <!-- ================= INFORMATION BOX ================= -->
+
+                            <div
+                                sclass="info-box">
+
+                                <hlayout
+                                    valign="middle">
+
+                                    <label
+                                        value="ⓘ"
+                                        sclass="info-icon"/>
+
+                                    <label
+                                        value="Please enter total number of cheques and select branch to create batch."
+                                        sclass="info-text"/>
+
+                                </hlayout>
+
+                            </div>
+
+                        </vlayout>
+
+                    </groupbox>
+
+                </vlayout>
 
             </hlayout>
-
-            <hlayout spacing="10px">
-
-                <label
-                    value="Branch Name"
-                    width="150px"/>
-
-                <textbox
-                    id="branchName"
-                    value="Angamaly Branch"
-                    readonly="true"
-                    width="300px"/>
-
-            </hlayout>
-
-            <hlayout spacing="10px">
-
-                <label
-                    value="Total Cheques"
-                    width="150px"/>
-
-                <intbox
-                    id="totalCheque"
-                    value="10"
-                    width="300px"/>
-
-            </hlayout>
-
-            <separator/>
-
-            <button
-                id="createBatchButton"
-                label="Create Batch"
-                width="150px"/>
 
         </vlayout>
 

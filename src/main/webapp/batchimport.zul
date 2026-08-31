@@ -1,69 +1,251 @@
 <?page title="Batch Import"?>
 
+<?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
+
 <zk>
 
     <window
-        title="Batch Import"
-        border="normal"
-        width="650px"
+        border="none"
+        width="100%"
+        height="100%"
         apply="com.cts.outward.controller.capture.BatchImportController">
 
         <vlayout
-            spacing="15px"
-            style="padding:30px;">
+            spacing="0"
+            width="100%"
+            height="100%"
+            sclass="capture-page">
 
-            <label
-                value="Import Batch XML"
-                style="font-size:20px; font-weight:bold;"/>
 
-            <separator/>
+            <!-- ================= HEADER ================= -->
 
-            <hlayout spacing="10px">
+            <div sclass="top-header">
 
-                <label
-                    value="Batch Number"
-                    width="150px"/>
+                <hlayout
+                    width="100%"
+                    height="70px"
+                    valign="middle">
 
-                <textbox
-                    id="batchNumber"
-                    readonly="true"
-                    width="300px"/>
+                    <label
+                        value="☰"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="CTS OUTWARD / CAPTURE OPERATOR"
+                        sclass="header-title"/>
+
+                    <div hflex="1"/>
+
+                    <label
+                        value="▣  Date : 21-06-2025"
+                        sclass="header-info"/>
+
+                    <label
+                        value="◷  Last Login : 21-06-2025 09:15 AM"
+                        sclass="header-info"/>
+
+                    <label
+                        value="♧"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="◯"
+                        sclass="header-icon"/>
+
+                </hlayout>
+
+            </div>
+
+
+            <!-- ================= BODY ================= -->
+
+            <hlayout
+                width="100%"
+                height="calc(100% - 70px)"
+                spacing="0">
+
+
+                <!-- ================= SIDEBAR ================= -->
+
+                <vlayout
+                    spacing="5px"
+                    sclass="sidebar">
+
+
+                    <!-- BATCH CAPTURE -->
+
+                    <div
+                        sclass="sidebar-item sidebar-item-selected">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="⌗"
+                                sclass="sidebar-icon-selected"/>
+
+                            <label
+                                value="Batch Capture"
+                                sclass="sidebar-text-selected"/>
+
+                        </hlayout>
+
+                    </div>
+
+
+                    <!-- SUBMITTED BATCHES -->
+
+                    <div
+                        sclass="sidebar-item">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="☷"
+                                sclass="sidebar-icon"/>
+
+                            <label
+                                value="Submitted Batches"
+                                sclass="sidebar-text"/>
+
+                        </hlayout>
+
+                    </div>
+
+                </vlayout>
+
+
+                <!-- ================= MAIN CONTENT ================= -->
+
+                <vlayout
+                    hflex="1"
+                    spacing="20px"
+                    sclass="main-content">
+
+
+                    <!-- PAGE TITLE -->
+
+                    <label
+                        value="Batch Import"
+                        sclass="page-title"/>
+
+
+                    <!-- ================= IMPORT CARD ================= -->
+
+                    <groupbox
+                        sclass="batch-card">
+
+                        <vlayout
+                            spacing="20px"
+                            style="padding:30px;">
+
+
+                            <!-- CARD TITLE -->
+
+                            <label
+                                value="Import Batch XML"
+                                sclass="card-title"/>
+
+                            <separator/>
+
+
+                            <!-- BATCH NUMBER -->
+
+                            <vlayout spacing="8px">
+
+                                <label
+                                    value="Batch Number"
+                                    sclass="form-label"/>
+
+                                <textbox
+                                    id="batchNumber"
+                                    readonly="true"
+                                    width="480px"
+                                    height="42px"
+                                    sclass="readonly-input"/>
+
+                            </vlayout>
+
+
+                            <!-- XML FILE -->
+
+                            <vlayout spacing="8px">
+
+                                <label
+                                    value="Cheque Details XML *"
+                                    sclass="form-label"/>
+
+                                <hlayout
+                                    spacing="15px"
+                                    valign="middle">
+
+                                    <button
+                                        id="chooseXmlButton"
+                                        label="CHOOSE XML FILE"
+                                        upload="true"
+                                        width="180px"
+                                        height="42px"/>
+
+                                    <label
+                                        id="selectedXmlFile"
+                                        value="No XML file selected"
+                                        sclass="info-text"/>
+
+                                </hlayout>
+
+                            </vlayout>
+
+
+                            <separator/>
+
+
+                            <!-- SUBMIT BUTTON -->
+
+                            <div
+                                width="100%"
+                                style="text-align:center;
+                                       padding-top:10px;">
+
+                                <button
+                                    id="submitButton"
+                                    label="SUBMIT"
+                                    width="200px"
+                                    height="48px"
+                                    sclass="create-batch-button"/>
+
+                            </div>
+
+
+                            <!-- INFORMATION -->
+
+                            <div
+                                sclass="info-box">
+
+                                <hlayout
+                                    valign="middle">
+
+                                    <label
+                                        value="ⓘ"
+                                        sclass="info-icon"/>
+
+                                    <label
+                                        value="Select the cheque details XML file and click Submit to import the cheque data."
+                                        sclass="info-text"/>
+
+                                </hlayout>
+
+                            </div>
+
+                        </vlayout>
+
+                    </groupbox>
+
+                </vlayout>
 
             </hlayout>
-
-            <hlayout spacing="10px">
-
-                <label
-                    value="XML File"
-                    width="150px"/>
-
-                <button
-                    id="chooseFileButton"
-                    label="Choose XML File"
-                    upload="true"
-                    width="150px"/>
-
-            </hlayout>
-
-            <hlayout spacing="10px">
-
-                <label
-                    value="Selected File"
-                    width="150px"/>
-
-                <label
-                    id="selectedFile"
-                    value="No file selected"
-                    width="300px"/>
-
-            </hlayout>
-
-            <separator/>
-
-            <button
-                id="importButton"
-                label="Import XML"
-                width="150px"/>
 
         </vlayout>
 

@@ -1,4 +1,3 @@
-
 package com.cts.outward.repository;
 
 import com.cts.outward.config.DatabaseConnection;
@@ -15,9 +14,10 @@ public class ChequeRepository {
         String sql =
                 "INSERT INTO cheque " +
                 "(cheque_number, batch_number, account_number, " +
-                "branch_code, payee_name, amount, " +
-                "front_image_path, back_image_path) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                "drawer_name, amount, micr_code, ifsc_code, " +
+                "status, checked_date, front_image_path, " +
+                "back_image_path) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
                 Connection connection =
@@ -27,43 +27,81 @@ public class ChequeRepository {
                         connection.prepareStatement(sql)
         ) {
 
+            // 1. Cheque Number
             statement.setString(
                     1,
                     cheque.getChequeNumber()
             );
 
+            // 2. Batch Number
             statement.setString(
                     2,
                     cheque.getBatchNumber()
             );
 
+            // 3. Account Number
             statement.setString(
                     3,
                     cheque.getAccountNumber()
             );
 
+            // 4. Drawer Name
             statement.setString(
                     4,
-                    cheque.getBranchCode()
+                    cheque.getDrawerName()
             );
 
-            statement.setString(
-                    5,
-                    cheque.getPayeeName()
-            );
-
+            // 5. Amount
             statement.setBigDecimal(
-                    6,
+                    5,
                     cheque.getAmount()
             );
 
+            // 6. MICR Code
+            statement.setString(
+                    6,
+                    cheque.getMicrCode()
+            );
+
+            // 7. IFSC Code
             statement.setString(
                     7,
+                    cheque.getIfscCode()
+            );
+
+            // 8. Status
+            statement.setString(
+                    8,
+                    cheque.getStatus()
+            );
+
+            // 9. Checked Date
+            if (cheque.getCheckedDate() != null) {
+
+                statement.setDate(
+                        9,
+                        java.sql.Date.valueOf(
+                                cheque.getCheckedDate()
+                        )
+                );
+
+            } else {
+
+                statement.setNull(
+                        9,
+                        java.sql.Types.DATE
+                );
+            }
+
+            // 10. Front Image Path
+            statement.setString(
+                    10,
                     cheque.getFrontImagePath()
             );
 
+            // 11. Back Image Path
             statement.setString(
-                    8,
+                    11,
                     cheque.getBackImagePath()
             );
 
@@ -71,4 +109,3 @@ public class ChequeRepository {
         }
     }
 }
-

@@ -1,0 +1,195 @@
+/* =========================================
+   CTS OUTWARD - CAPTURE OPERATOR
+   ========================================= */
+
+
+/* ---------- Main Page ---------- */
+
+.capture-page {
+    width: 100%;
+    height: 100%;
+    background: #f4f7fc;
+}
+
+
+/* ---------- Header ---------- */
+
+.top-header {
+    height: 70px;
+    background: #0b1f3a;
+    color: white;
+    padding: 0 25px;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.header-icon {
+    font-size: 22px;
+    color: white;
+}
+
+.header-info {
+    font-size: 14px;
+    color: white;
+}
+
+
+/* ---------- Sidebar ---------- */
+
+.sidebar {
+    width: 250px;
+    height: 100%;
+    background: #0b1f3a;
+    padding-top: 25px;
+}
+
+.sidebar-item {
+    width: 220px;
+    height: 55px;
+    margin-left: 15px;
+    border-radius: 5px;
+}
+
+.sidebar-item-selected {
+    background: #0757c7;
+}
+
+.sidebar-item:hover {
+    background: #12345d;
+}
+
+.sidebar-icon {
+    font-size: 20px;
+    color: #aab7c9;
+    margin-left: 20px;
+    margin-right: 15px;
+}
+
+.sidebar-icon-selected {
+    font-size: 20px;
+    color: white;
+    margin-left: 20px;
+    margin-right: 15px;
+}
+
+.sidebar-text {
+    font-size: 16px;
+    color: #aab7c9;
+}
+
+.sidebar-text-selected {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+}
+
+
+/* ---------- Content ---------- */
+
+.main-content {
+    height: 100%;
+    background: #f4f7fc;
+    padding: 35px 40px;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #17365d;
+}
+
+
+/* ---------- Card ---------- */
+
+.batch-card {
+    width: 100%;
+    background: white;
+    border: 1px solid #dde4ef;
+    border-radius: 8px;
+}
+
+
+/* ---------- Card Title ---------- */
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #17365d;
+}
+
+
+/* ---------- Form Labels ---------- */
+
+.form-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #17365d;
+}
+
+
+/* ---------- Input Fields ---------- */
+
+.form-input {
+    height: 42px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    border: 1px solid #0757c7;
+}
+
+
+/* ---------- Read Only Fields ---------- */
+
+.readonly-input {
+    height: 42px;
+    background: #f5f7fa;
+    border: 1px solid #d9e2ec;
+    border-radius: 5px;
+    color: #4a5568;
+}
+
+
+/* ---------- Create Button ---------- */
+
+.create-batch-button {
+    width: 165px;
+    height: 48px;
+    background: #0757c7;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+}
+
+.create-batch-button:hover {
+    background: #0649a8;
+}
+
+
+/* ---------- Information Box ---------- */
+
+.info-box {
+    width: 100%;
+    background: #eef6ff;
+    border: 1px solid #b8d7ff;
+    border-radius: 6px;
+    padding: 14px;
+}
+
+.info-icon {
+    color: #0757c7;
+    font-size: 20px;
+}
+
+.info-text {
+    color: #174ea6;
+    font-size: 14px;
+}
