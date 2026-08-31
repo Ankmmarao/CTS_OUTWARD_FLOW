@@ -24,7 +24,7 @@ public class BatchImportController
     private Textbox batchNumber;
 
     @Wire
-    private Label selectedFile;
+    private Label selectedXmlFile;
 
     private Media uploadedMedia;
 
@@ -33,17 +33,21 @@ public class BatchImportController
     private final XMLService xmlService =
             new XMLService();
 
+
     @Override
     public void doAfterCompose(Component component)
             throws Exception {
 
         super.doAfterCompose(component);
 
+        // Get batch number from URL
         currentBatchNumber =
                 Executions.getCurrent()
                         .getParameter("batchNumber");
 
-        if (currentBatchNumber != null) {
+        // Display batch number
+        if (currentBatchNumber != null &&
+                !currentBatchNumber.isBlank()) {
 
             batchNumber.setValue(
                     currentBatchNumber
@@ -51,8 +55,12 @@ public class BatchImportController
         }
     }
 
-    @Listen("onUpload=#chooseFileButton")
-    public void chooseFile(UploadEvent event) {
+
+    /*
+     * Choose XML File
+     */
+    @Listen("onUpload=#chooseXmlButton")
+    public void chooseXmlFile(UploadEvent event) {
 
         uploadedMedia = event.getMedia();
 
@@ -60,14 +68,41 @@ public class BatchImportController
             return;
         }
 
-        selectedFile.setValue(
-                uploadedMedia.getName()
+        String fileName =
+                uploadedMedia.getName();
+
+        // Check extension
+        if (fileName == null ||
+                !fileName.toLowerCase()
+                        .endsWith(".xml")) {
+
+            Messagebox.show(
+                    "Please select a valid XML file."
+            );
+
+            uploadedMedia = null;
+
+            selectedXmlFile.setValue(
+                    "No XML file selected"
+            );
+
+            return;
+        }
+
+        // Display selected file name
+        selectedXmlFile.setValue(
+                fileName
         );
     }
 
-    @Listen("onClick=#importButton")
-    public void importXML() {
 
+    /*
+     * Submit XML
+     */
+    @Listen("onClick=#submitButton")
+    public void submitXML() {
+
+        // Check XML file
         if (uploadedMedia == null) {
 
             Messagebox.show(
@@ -77,17 +112,8 @@ public class BatchImportController
             return;
         }
 
-        if (!uploadedMedia.getName()
-                .toLowerCase()
-                .endsWith(".xml")) {
 
-            Messagebox.show(
-                    "Please select a valid XML file."
-            );
-
-            return;
-        }
-
+        // Check batch number
         if (currentBatchNumber == null ||
                 currentBatchNumber.isBlank()) {
 
@@ -97,6 +123,7 @@ public class BatchImportController
 
             return;
         }
+
 
         File tempFile = null;
 
@@ -110,11 +137,13 @@ public class BatchImportController
                     ".xml"
             );
 
+
             /*
-             * Read uploaded XML as String
+             * Read uploaded XML
              */
             String xmlContent =
                     uploadedMedia.getStringData();
+
 
             /*
              * Write XML to temporary file
@@ -125,9 +154,9 @@ public class BatchImportController
                     StandardCharsets.UTF_8
             );
 
+
             /*
-             * Parse XML and save
-             * Cheque objects into DB
+             * Import XML
              */
             int count =
                     xmlService.importXML(
@@ -135,6 +164,10 @@ public class BatchImportController
                             currentBatchNumber
                     );
 
+
+            /*
+             * Success
+             */
             Messagebox.show(
                     "XML imported successfully.\n\n"
                     + "Batch Number: "
@@ -144,6 +177,7 @@ public class BatchImportController
                     + count
             );
 
+
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -152,6 +186,7 @@ public class BatchImportController
                     "XML import failed:\n"
                     + e.getMessage()
             );
+
 
         } finally {
 

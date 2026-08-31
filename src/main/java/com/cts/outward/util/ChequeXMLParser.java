@@ -39,10 +39,13 @@ public class ChequeXMLParser {
                     String element =
                             reader.getLocalName();
 
+                    // Start of cheque
                     if ("cheque".equals(element)) {
 
-                        cheque = new Cheque();
+                     cheque = new Cheque();
 
+                        // Set batch number from the
+                        // batch currently being imported
                         cheque.setBatchNumber(
                                 batchNumber
                         );
@@ -59,6 +62,7 @@ public class ChequeXMLParser {
 
                                 break;
 
+
                             case "accountNumber":
 
                                 cheque.setAccountNumber(
@@ -67,31 +71,78 @@ public class ChequeXMLParser {
 
                                 break;
 
-                            case "branchCode":
 
-                                cheque.setBranchCode(
+                            case "drawerName":
+
+                                cheque.setDrawerName(
                                         reader.getElementText()
                                 );
 
                                 break;
 
-                            case "payeeName":
-
-                                cheque.setPayeeName(
-                                        reader.getElementText()
-                                );
-
-                                break;
 
                             case "amount":
 
-                                cheque.setAmount(
-                                        new BigDecimal(
-                                                reader.getElementText()
-                                        )
+                                String amountText =
+                                        reader.getElementText();
+
+                                if (amountText != null &&
+                                        !amountText.trim().isEmpty()) {
+
+                                    cheque.setAmount(
+                                            new BigDecimal(
+                                                    amountText.trim()
+                                            )
+                                    );
+                                }
+
+                                break;
+
+
+                            case "micrCode":
+
+                                cheque.setMicrCode(
+                                        reader.getElementText()
                                 );
 
                                 break;
+
+
+                            case "ifscCode":
+
+                                cheque.setIfscCode(
+                                        reader.getElementText()
+                                );
+
+                                break;
+
+
+                            case "status":
+
+                                cheque.setStatus(
+                                        reader.getElementText()
+                                );
+
+                                break;
+
+
+                            case "checkedDate":
+
+                                String dateText =
+                                        reader.getElementText();
+
+                                if (dateText != null &&
+                                        !dateText.trim().isEmpty()) {
+
+                                    cheque.setCheckedDate(
+                                            java.time.LocalDate.parse(
+                                                    dateText.trim()
+                                            )
+                                    );
+                                }
+
+                                break;
+
 
                             case "frontImagePath":
 
@@ -101,12 +152,19 @@ public class ChequeXMLParser {
 
                                 break;
 
+
                             case "backImagePath":
 
                                 cheque.setBackImagePath(
                                         reader.getElementText()
                                 );
 
+                                break;
+
+
+                            default:
+
+                                // Ignore unknown XML elements
                                 break;
                         }
                     }

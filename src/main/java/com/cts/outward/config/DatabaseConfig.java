@@ -1,4 +1,3 @@
-
 package com.cts.outward.config;
 
 public final class DatabaseConfig {
@@ -10,12 +9,11 @@ public final class DatabaseConfig {
             "org.postgresql.Driver";
 
     public static final String URL =
-            "jdbc:postgresql://localhost:5432/postgres";
+            "jdbc:postgresql://db.bijnscklhxftxritxdrc.supabase.co:5432/postgres";
 
     public static final String USERNAME =
             "postgres";
 
     public static final String PASSWORD =
-            "12345";
+            "Sushmabandari@123";
 }
-

@@ -59,7 +59,7 @@ public class BatchCaptureController
                     batchService.createBatch(
                             branchCodeValue,
                             branchNameValue,
-                            totalChequeValue
+                            totalChequeValue,101
                     );
 
             // Redirect to Batch Import
