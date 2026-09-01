@@ -1,4 +1,3 @@
-
 package com.cts.outward.controller.capture;
 
 import com.cts.outward.model.Batch;
@@ -28,6 +27,11 @@ public class BatchCaptureController
     private final BatchService batchService =
             new BatchService();
 
+
+    // ==========================================
+    // CREATE BATCH
+    // ==========================================
+
     @Listen("onClick=#createBatchButton")
     public void createBatch() {
 
@@ -43,6 +47,7 @@ public class BatchCaptureController
             Integer totalChequeValue =
                     totalCheque.getValue();
 
+
             // Validation
             if (totalChequeValue == null ||
                     totalChequeValue <= 0) {
@@ -54,19 +59,22 @@ public class BatchCaptureController
                 return;
             }
 
+
             // Create and save batch
             Batch batch =
                     batchService.createBatch(
                             branchCodeValue,
                             branchNameValue,
-                            totalChequeValue,101
+                            totalChequeValue,
+                            101
                     );
+
 
             // Redirect to Batch Import
             Executions.sendRedirect(
-            	    "batchimport.zul?batchNumber="
-            	    + batch.getBatchNumber()
-            	);
+                    "batchimport.zul?batchNumber="
+                    + batch.getBatchNumber()
+            );
 
         } catch (Exception e) {
 
@@ -78,5 +86,18 @@ public class BatchCaptureController
             );
         }
     }
-}
 
+
+    // ==========================================
+    // OPEN SUBMITTED BATCHES
+    // ==========================================
+
+    @Listen("onClick=#submittedBatchesMenu")
+    public void openSubmittedBatches() {
+
+        Executions.sendRedirect(
+                "submitted.zul"
+        		
+        );
+    }
+}
