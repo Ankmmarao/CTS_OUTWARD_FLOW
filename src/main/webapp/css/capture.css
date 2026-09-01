@@ -1,100 +1,179 @@
-/* =========================================
+/* =========================================================
    CTS OUTWARD - CAPTURE OPERATOR
-   ========================================= */
+   ========================================================= */
 
 
-/* ---------- Main Page ---------- */
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
-.capture-page {
+html,
+body {
+    margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ZK WINDOW
+   ========================================================= */
+
+.z-window {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+/* =========================================================
+   MAIN PAGE
+   ========================================================= */
+
+.capture-page {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #f4f7fc;
 }
 
 
-/* ---------- Header ---------- */
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .top-header {
-    height: 70px;
+    width: 100% !important;
+    height: 70px !important;
+
     background: #0b1f3a;
-    color: white;
-    padding: 0 25px;
+
+    margin: 0 !important;
+    padding: 0 25px !important;
 }
 
 .header-title {
+    color: white;
     font-size: 20px;
     font-weight: bold;
-    color: white;
+    white-space: nowrap;
 }
 
 .header-icon {
-    font-size: 22px;
     color: white;
+    font-size: 22px;
+    white-space: nowrap;
+    margin-right: 12px;
 }
 
 .header-info {
-    font-size: 14px;
     color: white;
+    font-size: 14px;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 
-/* ---------- Sidebar ---------- */
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .sidebar {
-    width: 250px;
-    height: 100%;
+    width: 230px !important;
+    min-width: 230px !important;
+    height: 100% !important;
+
     background: #0b1f3a;
-    padding-top: 25px;
-}
 
-.sidebar-item {
-    width: 220px;
-    height: 55px;
-    margin-left: 15px;
-    border-radius: 5px;
-}
-
-.sidebar-item-selected {
-    background: #0757c7;
-}
-
-.sidebar-item:hover {
-    background: #12345d;
-}
-
-.sidebar-icon {
-    font-size: 20px;
-    color: #aab7c9;
-    margin-left: 20px;
-    margin-right: 15px;
-}
-
-.sidebar-icon-selected {
-    font-size: 20px;
-    color: white;
-    margin-left: 20px;
-    margin-right: 15px;
-}
-
-.sidebar-text {
-    font-size: 16px;
-    color: #aab7c9;
-}
-
-.sidebar-text-selected {
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
+    padding-top: 20px !important;
 }
 
 
-/* ---------- Content ---------- */
+/* =========================================================
+   SIDEBAR NAVIGATION BUTTON
+   ========================================================= */
+
+.sidebar-nav-button {
+    width: 230px !important;
+    height: 55px !important;
+
+    background: #0b1f3a !important;
+    color: #aab7c9 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    text-align: left !important;
+
+    padding-left: 20px !important;
+
+    font-size: 16px !important;
+    font-weight: normal !important;
+
+    cursor: pointer !important;
+}
+
+
+/* =========================================================
+   SIDEBAR BUTTON HOVER
+   ========================================================= */
+
+.sidebar-nav-button:hover {
+    background: #12345d !important;
+    color: white !important;
+}
+
+
+/* =========================================================
+   SIDEBAR SELECTED BUTTON
+   ========================================================= */
+
+.sidebar-nav-button-selected {
+    background: #0757c7 !important;
+    color: white !important;
+    font-weight: bold !important;
+}
+
+
+/* =========================================================
+   SELECTED BUTTON HOVER
+   ========================================================= */
+
+.sidebar-nav-button-selected:hover {
+    background: #0757c7 !important;
+    color: white !important;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
 
 .main-content {
-    height: 100%;
+    height: 100% !important;
+    min-width: 0 !important;
+
     background: #f4f7fc;
-    padding: 35px 40px;
+
+    padding: 35px 40px !important;
+
+    overflow: auto;
 }
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
 
 .page-title {
     font-size: 32px;
@@ -102,18 +181,32 @@
     color: #17365d;
 }
 
-
-/* ---------- Card ---------- */
-
-.batch-card {
-    width: 100%;
-    background: white;
-    border: 1px solid #dde4ef;
-    border-radius: 8px;
+.page-description {
+    font-size: 14px;
+    color: #6b7280;
 }
 
 
-/* ---------- Card Title ---------- */
+/* =========================================================
+   BATCH CARD
+   ========================================================= */
+
+.batch-card {
+    width: 100% !important;
+
+    background: white;
+
+    border: 1px solid #dde4ef;
+
+    border-radius: 8px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+
+/* =========================================================
+   CARD TITLE
+   ========================================================= */
 
 .card-title {
     font-size: 20px;
@@ -122,7 +215,9 @@
 }
 
 
-/* ---------- Form Labels ---------- */
+/* =========================================================
+   FORM LABEL
+   ========================================================= */
 
 .form-label {
     font-size: 14px;
@@ -131,12 +226,17 @@
 }
 
 
-/* ---------- Input Fields ---------- */
+/* =========================================================
+   FORM INPUT
+   ========================================================= */
 
 .form-input {
-    height: 42px;
+    height: 42px !important;
+
     border: 1px solid #cbd5e1;
+
     border-radius: 5px;
+
     font-size: 14px;
 }
 
@@ -145,42 +245,64 @@
 }
 
 
-/* ---------- Read Only Fields ---------- */
+/* =========================================================
+   READONLY INPUT
+   ========================================================= */
 
 .readonly-input {
-    height: 42px;
-    background: #f5f7fa;
+    height: 42px !important;
+
+    background: #f5f7fa !important;
+
     border: 1px solid #d9e2ec;
+
     border-radius: 5px;
+
     color: #4a5568;
 }
 
 
-/* ---------- Create Button ---------- */
+/* =========================================================
+   CREATE BATCH BUTTON
+   ========================================================= */
 
 .create-batch-button {
-    width: 165px;
-    height: 48px;
-    background: #0757c7;
-    color: white;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
+    width: 165px !important;
+    height: 48px !important;
+
+    background: #0757c7 !important;
+
+    color: white !important;
+
+    font-size: 14px !important;
+
+    font-weight: bold !important;
+
+    border: none !important;
+
+    border-radius: 6px !important;
+
+    cursor: pointer !important;
 }
 
 .create-batch-button:hover {
-    background: #0649a8;
+    background: #0649a8 !important;
 }
 
 
-/* ---------- Information Box ---------- */
+/* =========================================================
+   INFORMATION BOX
+   ========================================================= */
 
 .info-box {
-    width: 100%;
+    width: 100% !important;
+
     background: #eef6ff;
+
     border: 1px solid #b8d7ff;
+
     border-radius: 6px;
+
     padding: 14px;
 }
 
@@ -192,4 +314,72 @@
 .info-text {
     color: #174ea6;
     font-size: 14px;
+}
+
+
+/* =========================================================
+   SEPARATOR
+   ========================================================= */
+
+.z-separator {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+
+/* =========================================================
+   SUBMITTED BATCH SUMMARY
+   ========================================================= */
+
+.submitted-summary {
+    background: white;
+
+    border: 1px solid #dde4ef;
+
+    border-radius: 8px;
+}
+
+.summary-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #17365d;
+
+    padding: 15px 15px 0 15px;
+}
+
+.summary-value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #0757c7;
+
+    padding-left: 15px;
+}
+
+
+/* =========================================================
+   SUBMITTED BATCH TABLE
+   ========================================================= */
+
+.submitted-table-card {
+    width: 100% !important;
+
+    background: white;
+
+    border: 1px solid #dde4ef;
+
+    border-radius: 8px;
+}
+
+.submitted-listbox {
+    width: 100% !important;
+}
+
+.submitted-listbox .z-listheader {
+    background: #071b36;
+    color: white;
+    font-weight: bold;
+}
+
+.submitted-listbox .z-listitem:hover {
+    background: #f4f7fc;
 }

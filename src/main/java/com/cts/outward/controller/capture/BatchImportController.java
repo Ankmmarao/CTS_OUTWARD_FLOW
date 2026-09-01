@@ -176,6 +176,9 @@ public class BatchImportController
                     + "Cheques Imported: "
                     + count
             );
+         
+                Executions.sendRedirect("batch.zul");
+            
 
 
         } catch (Exception e) {

@@ -67,57 +67,35 @@
 
                 <!-- ================= SIDEBAR ================= -->
 
-                <vlayout
-                    spacing="5px"
-                    sclass="sidebar">
+                <!-- ================= SIDEBAR ================= -->
+
+<vlayout
+    width="230px"
+    height="100%"
+    spacing="5px"
+    sclass="sidebar">
 
 
-                    <!-- BATCH CAPTURE -->
+    <!-- BATCH CAPTURE -->
 
-                    <div
-                        sclass="sidebar-item sidebar-item-selected">
-
-                        <hlayout
-                            height="55px"
-                            valign="middle">
-
-                            <label
-                                value="⌗"
-                                sclass="sidebar-icon-selected"/>
-
-                            <label
-                                value="Batch Capture"
-                                sclass="sidebar-text-selected"/>
-
-                        </hlayout>
-
-                    </div>
+    <button
+        id="batchCaptureButton"
+        label="⌗   Batch Capture"
+        width="230px"
+        height="55px"
+        sclass="sidebar-nav-button sidebar-nav-button-selected"/>
 
 
-                    <!-- SUBMITTED BATCHES -->
+    <!-- SUBMITTED BATCHES -->
 
-                    <div
-                        sclass="sidebar-item">
+    <button
+        id="submittedBatchesMenu"
+        label="☷   Submitted Batches"
+        width="230px"
+        height="55px"
+        sclass="sidebar-nav-button"/>
 
-                        <hlayout
-                            height="55px"
-                            valign="middle">
-
-                            <label
-                                value="☷"
-                                sclass="sidebar-icon"/>
-
-                            <label
-                                value="Submitted Batches"
-                                sclass="sidebar-text"/>
-
-                        </hlayout>
-
-                    </div>
-
-                </vlayout>
-
-
+</vlayout>
                 <!-- ================= MAIN CONTENT ================= -->
 
                 <vlayout
