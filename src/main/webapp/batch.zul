@@ -1,3 +1,4 @@
+```xml
 <?page title="Batch Capture"?>
 
 <?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
@@ -15,7 +16,6 @@
             width="100%"
             height="100%"
             sclass="capture-page">
-
 
             <!-- ================= HEADER ================= -->
 
@@ -37,11 +37,11 @@
                     <div hflex="1"/>
 
                     <label
-                        value="▣  Date : 21-06-2025"
+                        value="▣  Date : 01-09-2026"
                         sclass="header-info"/>
 
                     <label
-                        value="◷  Last Login : 21-06-2025 09:15 AM"
+                        value="◷  Last Login : 01-09-2026 09:15 AM"
                         sclass="header-info"/>
 
                     <label
@@ -67,35 +67,35 @@
 
                 <!-- ================= SIDEBAR ================= -->
 
-                <!-- ================= SIDEBAR ================= -->
-
-<vlayout
-    width="230px"
-    height="100%"
-    spacing="5px"
-    sclass="sidebar">
+                <vlayout
+                    width="230px"
+                    height="100%"
+                    spacing="5px"
+                    sclass="sidebar">
 
 
-    <!-- BATCH CAPTURE -->
+                    <!-- BATCH CAPTURE -->
 
-    <button
-        id="batchCaptureButton"
-        label="⌗   Batch Capture"
-        width="230px"
-        height="55px"
-        sclass="sidebar-nav-button sidebar-nav-button-selected"/>
+                    <button
+                        id="batchCaptureButton"
+                        label="⌗   Batch Capture"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button sidebar-nav-button-selected"/>
 
 
-    <!-- SUBMITTED BATCHES -->
+                    <!-- SUBMITTED BATCHES -->
 
-    <button
-        id="submittedBatchesMenu"
-        label="☷   Submitted Batches"
-        width="230px"
-        height="55px"
-        sclass="sidebar-nav-button"/>
+                    <button
+                        id="submittedBatchesMenu"
+                        label="☷   Submitted Batches"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button"/>
 
-</vlayout>
+                </vlayout>
+
+
                 <!-- ================= MAIN CONTENT ================= -->
 
                 <vlayout
@@ -247,3 +247,4 @@
     </window>
 
 </zk>
+```

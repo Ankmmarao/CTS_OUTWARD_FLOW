@@ -1,3 +1,4 @@
+
 package com.cts.outward.controller.capture;
 
 import com.cts.outward.model.Batch;
@@ -73,7 +74,7 @@ public class BatchCaptureController
             // Redirect to Batch Import
             Executions.sendRedirect(
                     "batchimport.zul?batchNumber="
-                    + batch.getBatchNumber()
+                            + batch.getBatchNumber()
             );
 
         } catch (Exception e) {
@@ -82,7 +83,7 @@ public class BatchCaptureController
 
             Messagebox.show(
                     "Batch creation failed:\n"
-                    + e.getMessage()
+                            + e.getMessage()
             );
         }
     }
@@ -92,12 +93,12 @@ public class BatchCaptureController
     // OPEN SUBMITTED BATCHES
     // ==========================================
 
-    @Listen("onClick=#submittedBatchesMenu")
+    @Listen("onClick=#submittedBatchesButton")
     public void openSubmittedBatches() {
 
         Executions.sendRedirect(
                 "submitted.zul"
-        		
         );
     }
 }
+
