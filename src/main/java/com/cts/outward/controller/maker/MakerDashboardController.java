@@ -1,0 +1,558 @@
+package com.cts.outward.controller.maker;
+
+import com.cts.outward.model.Batch;
+import com.cts.outward.service.BatchService;
+
+import java.util.List;
+
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Wire;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Messagebox;
+
+public class MakerDashboardController
+        extends SelectorComposer<Component> {
+
+    // =========================================================
+    // WIRED UI COMPONENTS
+    // =========================================================
+
+    @Wire
+    private Listbox batchList;
+
+    @Wire
+    private Label totalBatches;
+
+    @Wire
+    private Label availableBatches;
+
+    @Wire
+    private Label inProgressBatches;
+
+
+    // =========================================================
+    // SERVICE
+    // =========================================================
+
+    private final BatchService batchService =
+            new BatchService();
+
+
+    // =========================================================
+    // LOGGED-IN MAKER ID
+    // =========================================================
+
+    // Temporary Maker ID
+    // Later get this from login/session
+
+    private final Integer makerId = 101;
+
+
+    // =========================================================
+    // AFTER PAGE LOAD
+    // =========================================================
+
+    @Override
+    public void doAfterCompose(Component component)
+            throws Exception {
+
+        super.doAfterCompose(component);
+
+        loadBatches();
+    }
+
+
+    // =========================================================
+    // LOAD BATCHES FROM DATABASE
+    // =========================================================
+
+    private void loadBatches() {
+
+        try {
+
+            // -------------------------------------------------
+            // Get batches from database
+            // -------------------------------------------------
+
+            List<Batch> batches =
+                    batchService.findMakerBatches(makerId);
+
+
+            // -------------------------------------------------
+            // Dashboard counts
+            // -------------------------------------------------
+
+            int total = batches.size();
+
+            int available = 0;
+
+            int inProgress = 0;
+
+
+            // -------------------------------------------------
+            // Calculate counts
+            // -------------------------------------------------
+
+            for (Batch batch : batches) {
+
+                String status =
+                        batch.getBatchStatus();
+
+                if (status == null) {
+                    continue;
+                }
+
+
+                // SUBMITTED = available for Maker
+
+                if ("SUBMITTED".equalsIgnoreCase(status)) {
+
+                    available++;
+                }
+
+
+                // LOCKED = assigned to current Maker
+                // IN_PROGRESS = processing started
+
+                if ("LOCKED".equalsIgnoreCase(status)
+                        || "IN_PROGRESS".equalsIgnoreCase(status)) {
+
+                    inProgress++;
+                }
+            }
+
+
+            // =================================================
+            // UPDATE DASHBOARD CARDS
+            // =================================================
+
+            if (totalBatches != null) {
+
+                totalBatches.setValue(
+                        String.valueOf(total)
+                );
+            }
+
+
+            if (availableBatches != null) {
+
+                availableBatches.setValue(
+                        String.valueOf(available)
+                );
+            }
+
+
+            if (inProgressBatches != null) {
+
+                inProgressBatches.setValue(
+                        String.valueOf(inProgress)
+                );
+            }
+
+
+            // =================================================
+            // CREATE LIST MODEL
+            // =================================================
+
+            ListModelList<Batch> model =
+                    new ListModelList<>(batches);
+
+            batchList.setModel(model);
+
+
+            // =================================================
+            // RENDER BATCH TABLE
+            // =================================================
+
+            batchList.setItemRenderer(
+                    new ListitemRenderer<Batch>() {
+
+                        @Override
+                        public void render(
+                                Listitem item,
+                                Batch batch,
+                                int index) {
+
+
+                            // =================================
+                            // 1. BATCH NUMBER
+                            // =================================
+
+                            Listcell batchNumberCell =
+                                    new Listcell();
+
+                            batchNumberCell.setLabel(
+                                    batch.getBatchNumber()
+                            );
+
+                            item.appendChild(
+                                    batchNumberCell
+                            );
+
+
+                            // =================================
+                            // 2. TOTAL CHEQUES
+                            // =================================
+
+                            Listcell totalChequeCell =
+                                    new Listcell();
+
+                            String totalCheques = "0";
+
+                            if (batch.getTotalCheques() != null) {
+
+                                totalCheques =
+                                        String.valueOf(
+                                                batch.getTotalCheques()
+                                        );
+                            }
+
+                            totalChequeCell.setLabel(
+                                    totalCheques
+                            );
+
+                            item.appendChild(
+                                    totalChequeCell
+                            );
+
+
+                            // =================================
+                            // 3. STATUS
+                            // =================================
+
+                            Listcell statusCell =
+                                    new Listcell();
+
+                            String status =
+                                    batch.getBatchStatus();
+
+                            if (status == null) {
+
+                                status = "-";
+                            }
+
+                            statusCell.setLabel(
+                                    status
+                            );
+
+                            item.appendChild(
+                                    statusCell
+                            );
+
+
+                            // =================================
+                            // 4. USER ID
+                            // =================================
+
+                            Listcell userCell =
+                                    new Listcell();
+
+                            String userId = "-";
+
+                            if (batch.getCreatedBy() != null) {
+
+                                userId =
+                                        String.valueOf(
+                                                batch.getCreatedBy()
+                                        );
+                            }
+
+                            userCell.setLabel(
+                                    userId
+                            );
+
+                            item.appendChild(
+                                    userCell
+                            );
+
+
+                            // =================================
+                            // 5. ASSIGNMENT
+                            // =================================
+
+                            Listcell assignmentCell =
+                                    new Listcell();
+
+
+                            // ---------------------------------
+                            // SUBMITTED
+                            // ---------------------------------
+
+                            if ("SUBMITTED"
+                                    .equalsIgnoreCase(status)) {
+
+                                Button assignButton =
+                                        new Button(
+                                                "Assign to Me"
+                                        );
+
+                                assignButton.setSclass(
+                                        "assign-button"
+                                );
+
+                                assignButton.addEventListener(
+                                        "onClick",
+                                        event -> {
+
+                                            assignBatch(batch);
+                                        }
+                                );
+
+                                assignmentCell.appendChild(
+                                        assignButton
+                                );
+                            }
+
+
+                            // ---------------------------------
+                            // LOCKED
+                            // ---------------------------------
+
+                            else if ("LOCKED"
+                                    .equalsIgnoreCase(status)) {
+
+                                if (isMakerBatch(batch)) {
+
+                                    assignmentCell.setLabel(
+                                            "Assigned to Me"
+                                    );
+
+                                } else {
+
+                                    assignmentCell.setLabel(
+                                            "Assigned"
+                                    );
+                                }
+                            }
+
+
+                            // ---------------------------------
+                            // IN PROGRESS
+                            // ---------------------------------
+
+                            else if ("IN_PROGRESS"
+                                    .equalsIgnoreCase(status)) {
+
+                                assignmentCell.setLabel(
+                                        "In Progress"
+                                );
+                            }
+
+
+                            // ---------------------------------
+                            // OTHER STATUS
+                            // ---------------------------------
+
+                            else {
+
+                                assignmentCell.setLabel(
+                                        "-"
+                                );
+                            }
+
+
+                            item.appendChild(
+                                    assignmentCell
+                            );
+
+
+                            // =================================
+                            // 6. OPEN BUTTON
+                            // =================================
+
+                            Listcell openCell =
+                                    new Listcell();
+
+                            Button openButton =
+                                    new Button(
+                                            "Open"
+                                    );
+
+                            openButton.setSclass(
+                                    "open-button"
+                            );
+
+
+                            // ---------------------------------
+                            // Only current Maker can open
+                            // assigned batch
+                            // ---------------------------------
+
+                            if (isMakerBatch(batch)) {
+
+                                openButton.addEventListener(
+                                        "onClick",
+                                        event -> {
+
+                                            openBatch(batch);
+                                        }
+                                );
+
+                            } else {
+
+                                openButton.setDisabled(true);
+                            }
+
+
+                            openCell.appendChild(
+                                    openButton
+                            );
+
+                            item.appendChild(
+                                    openCell
+                            );
+                        }
+                    }
+            );
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            Messagebox.show(
+                    "Unable to load batches from database:\n"
+                            + e.getMessage()
+            );
+        }
+    }
+
+
+    // =========================================================
+    // CHECK WHETHER BATCH BELONGS TO CURRENT MAKER
+    // =========================================================
+
+    private boolean isMakerBatch(Batch batch) {
+
+        if (batch == null) {
+
+            return false;
+        }
+
+        if (batch.getCreatedBy() == null) {
+
+            return false;
+        }
+
+        if (makerId == null) {
+
+            return false;
+        }
+
+        return makerId.equals(
+                batch.getCreatedBy()
+        );
+    }
+
+
+    // =========================================================
+    // ASSIGN BATCH TO MAKER
+    // =========================================================
+
+    private void assignBatch(Batch batch) {
+
+        if (batch == null) {
+
+            return;
+        }
+
+
+        try {
+
+            // -------------------------------------------------
+            // Assign batch in database
+            // -------------------------------------------------
+
+            batchService.assignBatchToMaker(
+                    batch.getBatchNumber(),
+                    makerId
+            );
+
+
+            // -------------------------------------------------
+            // Success message
+            // -------------------------------------------------
+
+            Messagebox.show(
+                    "Batch "
+                            + batch.getBatchNumber()
+                            + " assigned successfully."
+            );
+
+
+            // -------------------------------------------------
+            // Reload dashboard
+            // -------------------------------------------------
+
+            loadBatches();
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            Messagebox.show(
+                    "Unable to assign batch:\n"
+                            + e.getMessage()
+            );
+        }
+    }
+
+
+    // =========================================================
+    // OPEN BATCH
+    // =========================================================
+
+    private void openBatch(Batch batch) {
+
+        if (batch == null) {
+
+            return;
+        }
+
+
+        // -----------------------------------------------------
+        // Security check
+        // -----------------------------------------------------
+
+        if (!isMakerBatch(batch)) {
+
+            Messagebox.show(
+                    "This batch is not assigned to you."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            // -------------------------------------------------
+            // Open Maker batch processing page
+            // -------------------------------------------------
+
+            Executions.sendRedirect(
+                    "batch.zul?batchNumber="
+                            + batch.getBatchNumber()
+            );
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            Messagebox.show(
+                    "Unable to open batch:\n"
+                            + e.getMessage()
+            );
+        }
+    }
+}
