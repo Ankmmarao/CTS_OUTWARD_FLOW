@@ -29,50 +29,6 @@ public class BatchService {
     // CREATE / SAVE BATCH
     // =========================================================
 
-    public void createBatch(Batch batch)
-            throws SQLException {
-
-        if (batch == null) {
-
-            throw new IllegalArgumentException(
-                    "Batch cannot be null"
-            );
-
-        }
-
-        if (batch.getBatchNumber() == null
-                || batch.getBatchNumber().trim().isEmpty()) {
-
-            throw new IllegalArgumentException(
-                    "Batch number is required"
-            );
-
-        }
-
-        // -----------------------------------------------------
-        // Default status for newly created batch
-        // -----------------------------------------------------
-
-        if (batch.getBatchStatus() == null
-                || batch.getBatchStatus().trim().isEmpty()) {
-
-            batch.setBatchStatus("CREATED");
-
-        }
-
-        // -----------------------------------------------------
-        // Save into database
-        // -----------------------------------------------------
-
-        batchRepository.save(batch);
-    }
-
-    // =========================================================
-    // FIND SUBMITTED BATCHES
-    //
-    // Used by Capture Operator / Maker
-    // =========================================================
-
     public List<Batch> findSubmittedBatches()
             throws SQLException {
 
@@ -172,6 +128,57 @@ public class BatchService {
                 batchNumber
         );
 
+    }
+    public Batch createBatch(
+            String branchCodeValue,
+            String branchNameValue,
+            Integer totalChequeValue,
+            int i) throws SQLException {
+
+        if (branchCodeValue == null
+                || branchCodeValue.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Branch code is required"
+            );
+        }
+
+        if (branchNameValue == null
+                || branchNameValue.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    "Branch name is required"
+            );
+        }
+
+        if (totalChequeValue == null
+                || totalChequeValue <= 0) {
+
+            throw new IllegalArgumentException(
+                    "Total cheque count must be greater than zero"
+            );
+        }
+
+        Batch batch = new Batch();
+
+        batch.setBranchCode(branchCodeValue);
+        batch.setBranchName(branchNameValue);
+        batch.setTotalCheques(totalChequeValue);
+
+        // Batch number should be generated automatically
+        batch.setBatchNumber(
+                "BATCH" + System.currentTimeMillis()
+        );
+
+        // Initial status
+        batch.setBatchStatus(
+                "READY_FOR_ASSIGNMENT"
+        );
+
+        // Save batch
+        batchRepository.save(batch);
+
+        return batch;
     }
 
 }
