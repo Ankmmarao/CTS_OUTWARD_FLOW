@@ -1,10 +1,11 @@
 <?page title="Submitted Batches"?>
 
+<?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
+
 <zk>
 
     <window
-        title="Submitted Batches"
-        border="normal"
+        border="none"
         width="100%"
         height="100%"
         apply="com.cts.outward.controller.capture.SubmittedBatchesController">
@@ -12,169 +13,162 @@
         <vlayout
             width="100%"
             height="100%"
-            
-            spacing="0px">
+            spacing="0"
+            sclass="capture-page">
 
-            <!-- ================= HEADER ================= -->
 
-            <hlayout
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <div
                 width="100%"
                 height="70px"
-                valign="middle"
-                style="background:#ffffff; border-bottom:1px solid #e5e7eb; padding:0px 25px;">
+                sclass="top-header">
 
-                <vlayout
-                    hflex="1"
-                    spacing="2px">
-
-                    <label
-                        value="CTS OUTWARD"
-                        style="font-size:20px; font-weight:bold; color:#1f2937;"/>
+                <hlayout
+                    width="100%"
+                    height="70px"
+                    valign="middle">
 
                     <label
-                        value="CAPTURE OPERATOR"
-                        style="font-size:12px; color:#6b7280;"/>
-
-                </vlayout>
-
-                <!-- Date -->
-
-                <vlayout
-                    width="150px"
-                    spacing="2px">
+                        value="☰"
+                        sclass="header-icon"/>
 
                     <label
-                        value="Date"
-                        style="font-size:11px; color:#6b7280;"/>
+                        value="CTS OUTWARD / CAPTURE OPERATOR"
+                        sclass="header-title"/>
+
+                    <space hflex="1"/>
 
                     <label
-                        id="currentDate"
-                        value="01-09-2026"
-                        style="font-size:13px; font-weight:bold;"/>
-
-                </vlayout>
-
-                <!-- Last Login -->
-
-                <vlayout
-                    width="180px"
-                    spacing="2px">
+                        value="▣  Date : 01-09-2026"
+                        sclass="header-info"/>
 
                     <label
-                        value="Last Login"
-                        style="font-size:11px; color:#6b7280;"/>
+                        value="◷  Last Login : 01-09-2026 09:15 AM"
+                        sclass="header-info"/>
 
                     <label
-                        id="lastLogin"
-                        value="01-09-2026 09:15 AM"
-                        style="font-size:13px; font-weight:bold;"/>
+                        value="♧"
+                        sclass="header-icon"/>
 
-                </vlayout>
+                    <label
+                        value="◯"
+                        sclass="header-icon"/>
 
-                <!-- Notification -->
+                </hlayout>
 
-                <button
-                    id="notificationButton"
-                    label="🔔"
-                    width="45px"
-                    height="40px"
-                    style="font-size:18px; border:none; background:transparent;"/>
-
-                <!-- Profile -->
-
-                <button
-                    id="profileButton"
-                    label="👤"
-                    width="45px"
-                    height="40px"
-                    style="font-size:18px; border:none; background:transparent;"/>
-
-            </hlayout>
+            </div>
 
 
-            <!-- ================= BODY ================= -->
+            <!-- ================================================= -->
+            <!-- BODY -->
+            <!-- ================================================= -->
 
             <hlayout
                 width="100%"
-                height="100%"
-                spacing="0px">
+                height="calc(100% - 70px)"
+                spacing="0">
 
-                <!-- ================= SIDEBAR ================= -->
+
+                <!-- ================================================= -->
+                <!-- SIDEBAR -->
+                <!-- ================================================= -->
 
                 <vlayout
-                    width="220px"
+                    width="230px"
                     height="100%"
                     spacing="5px"
-                    style="background:#f8fafc; border-right:1px solid #e5e7eb; padding:20px 10px;">
+                    sclass="sidebar">
 
-                    <label
-                        value="CAPTURE OPERATOR"
-                        style="font-size:12px; font-weight:bold; color:#6b7280; padding:10px;"/>
+
+                    <!-- BATCH CAPTURE -->
 
                     <button
                         id="batchCaptureButton"
-                        label="Batch Capture"
-                        width="100%"
-                        height="45px"
-                        style="text-align:left; border:none; background:transparent; padding-left:15px;"/>
+                        label="⌗   Batch Capture"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button"/>
+
+
+                    <!-- SUBMITTED BATCHES -->
 
                     <button
                         id="submittedBatchesButton"
-                        label="Submitted Batches"
-                        width="100%"
-                        height="45px"
-                        style="text-align:left; border:none; background:#e5e7eb; font-weight:bold; padding-left:15px;"/>
+                        label="☷   Submitted Batches"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button sidebar-nav-button-selected"/>
 
                 </vlayout>
 
 
-                <!-- ================= CONTENT ================= -->
+                <!-- ================================================= -->
+                <!-- MAIN CONTENT -->
+                <!-- ================================================= -->
 
                 <vlayout
                     hflex="1"
                     height="100%"
                     spacing="20px"
-                    style="padding:30px; background:#f9fafb;">
+                    sclass="main-content">
 
-                    <!-- Page Heading -->
 
-                    <vlayout spacing="5px">
+                    <!-- PAGE HEADING -->
+
+                    <vlayout
+                        spacing="5px">
 
                         <label
                             value="Submitted Batches"
-                            style="font-size:24px; font-weight:bold; color:#111827;"/>
+                            sclass="page-title"/>
 
                         <label
                             value="Batches submitted for further processing."
-                            style="font-size:13px; color:#6b7280;"/>
+                            sclass="page-description"/>
 
                     </vlayout>
 
 
-                    <!-- ================= SUMMARY ================= -->
+                    <!-- ================================================= -->
+                    <!-- SUMMARY -->
+                    <!-- ================================================= -->
 
                     <groupbox
-                        width="220px"
-                        height="90px"
-                        closable="false">
+                        width="250px"
+                        height="100px"
+                        closable="false"
+                        sclass="submitted-summary">
 
-                        <caption
-                            label="Total Submitted Batches"/>
+                        <vlayout
+                            width="100%"
+                            height="100%"
+                            spacing="5px">
 
-                        <label
-                            id="totalSubmitted"
-                            value="0"
-                            style="font-size:25px; font-weight:bold; padding:15px;"/>
+                            <label
+                                value="Total Submitted Batches"
+                                sclass="summary-label"/>
+
+                            <label
+                                id="totalSubmitted"
+                                value="0"
+                                sclass="summary-value"/>
+
+                        </vlayout>
 
                     </groupbox>
 
 
-                    <!-- ================= TABLE ================= -->
+                    <!-- ================================================= -->
+                    <!-- TABLE -->
+                    <!-- ================================================= -->
 
                     <groupbox
-                        width="100%"
                         hflex="1"
-                        closable="false">
+                        closable="false"
+                        sclass="submitted-table-card">
 
                         <caption
                             label="Submitted Batch List"/>
@@ -183,7 +177,8 @@
                             id="submittedBatchList"
                             width="100%"
                             height="100%"
-                            emptyMessage="No submitted batches found.">
+                            emptyMessage="No submitted batches found."
+                            sclass="submitted-listbox">
 
                             <listhead>
 

@@ -8,6 +8,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,40 +43,38 @@ public class ChequeXMLParser {
                     // Start of cheque
                     if ("cheque".equals(element)) {
 
-                     cheque = new Cheque();
+                        cheque = new Cheque();
 
-                        // Set batch number from the
+                        // Use batch number from the
                         // batch currently being imported
-                        cheque.setBatchNumber(
-                                batchNumber
-                        );
+                        cheque.setBatchNumber(batchNumber);
 
                     } else if (cheque != null) {
 
                         switch (element) {
 
-                            case "chequeNumber":
+                            case "cheque_number":
 
                                 cheque.setChequeNumber(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
 
 
-                            case "accountNumber":
+                            case "account_number":
 
                                 cheque.setAccountNumber(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
 
 
-                            case "drawerName":
+                            case "drawer_name":
 
                                 cheque.setDrawerName(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
@@ -99,19 +98,19 @@ public class ChequeXMLParser {
                                 break;
 
 
-                            case "micrCode":
+                            case "micr_code":
 
                                 cheque.setMicrCode(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
 
 
-                            case "ifscCode":
+                            case "ifsc_code":
 
                                 cheque.setIfscCode(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
@@ -120,13 +119,13 @@ public class ChequeXMLParser {
                             case "status":
 
                                 cheque.setStatus(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
 
 
-                            case "checkedDate":
+                            case "checked_date":
 
                                 String dateText =
                                         reader.getElementText();
@@ -135,7 +134,7 @@ public class ChequeXMLParser {
                                         !dateText.trim().isEmpty()) {
 
                                     cheque.setCheckedDate(
-                                            java.time.LocalDate.parse(
+                                            LocalDate.parse(
                                                     dateText.trim()
                                             )
                                     );
@@ -144,27 +143,41 @@ public class ChequeXMLParser {
                                 break;
 
 
-                            case "frontImagePath":
+                            case "front_image_path":
 
                                 cheque.setFrontImagePath(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
 
                                 break;
 
 
-                            case "backImagePath":
+                            case "back_image_path":
 
                                 cheque.setBackImagePath(
-                                        reader.getElementText()
+                                        reader.getElementText().trim()
                                 );
+
+                                break;
+
+
+                            case "batch_number":
+
+                                /*
+                                 * We intentionally don't use
+                                 * the batch number from XML.
+                                 *
+                                 * The batch number comes from
+                                 * the Batch Capture flow.
+                                 */
+                                reader.getElementText();
 
                                 break;
 
 
                             default:
 
-                                // Ignore unknown XML elements
+                                // Ignore unknown elements
                                 break;
                         }
                     }
@@ -176,6 +189,25 @@ public class ChequeXMLParser {
                 ) {
 
                     if (cheque != null) {
+
+                        // Required field validation
+                        if (cheque.getChequeNumber() == null ||
+                                cheque.getChequeNumber()
+                                        .trim().isEmpty()) {
+
+                            throw new Exception(
+                                    "Cheque number is missing in XML."
+                            );
+                        }
+
+                        if (cheque.getBatchNumber() == null ||
+                                cheque.getBatchNumber()
+                                        .trim().isEmpty()) {
+
+                            throw new Exception(
+                                    "Batch number is missing."
+                            );
+                        }
 
                         cheques.add(cheque);
 

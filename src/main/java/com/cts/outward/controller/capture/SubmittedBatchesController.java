@@ -6,7 +6,9 @@ import com.cts.outward.repository.BatchRepository;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.select.SelectorComposer;
+import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -92,4 +94,12 @@ public class SubmittedBatchesController
             e.printStackTrace();
         }
     }
+    
+    @Listen("onClick=#batchCaptureButton")
+    public void openBatchCapture() {
+        Executions.sendRedirect("batch.zul");
+    }
+    
+    
+    
 }

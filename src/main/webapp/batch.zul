@@ -1,3 +1,4 @@
+```xml
 <?page title="Batch Capture"?>
 
 <?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
@@ -36,11 +37,11 @@
                     <div hflex="1"/>
 
                     <label
-                        value="▣  Date : 21-06-2025"
+                        value="▣  Date : 01-09-2026"
                         sclass="header-info"/>
 
                     <label
-                        value="◷  Last Login : 21-06-2025 09:15 AM"
+                        value="◷  Last Login : 01-09-2026 09:15 AM"
                         sclass="header-info"/>
 
                     <label
@@ -67,54 +68,30 @@
                 <!-- ================= SIDEBAR ================= -->
 
                 <vlayout
+                    width="230px"
+                    height="100%"
                     spacing="5px"
                     sclass="sidebar">
 
 
                     <!-- BATCH CAPTURE -->
 
-                    <div
+                    <button
                         id="batchCaptureButton"
-                        sclass="sidebar-item sidebar-item-selected">
-
-                        <hlayout
-                            height="55px"
-                            valign="middle">
-
-                            <label
-                                value="⌗"
-                                sclass="sidebar-icon-selected"/>
-
-                            <label
-                                value="Batch Capture"
-                                sclass="sidebar-text-selected"/>
-
-                        </hlayout>
-
-                    </div>
+                        label="⌗   Batch Capture"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button sidebar-nav-button-selected"/>
 
 
                     <!-- SUBMITTED BATCHES -->
 
-                    <div
-                        id="submittedBatchesButton"
-                        sclass="sidebar-item">
-
-                        <hlayout
-                            height="55px"
-                            valign="middle">
-
-                            <label
-                                value="☷"
-                                sclass="sidebar-icon"/>
-
-                            <label
-                                value="Submitted Batches"
-                                sclass="sidebar-text"/>
-
-                        </hlayout>
-
-                    </div>
+                    <button
+                        id="submittedBatchesMenu"
+                        label="☷   Submitted Batches"
+                        width="230px"
+                        height="55px"
+                        sclass="sidebar-nav-button"/>
 
                 </vlayout>
 
@@ -270,3 +247,4 @@
     </window>
 
 </zk>
+```
