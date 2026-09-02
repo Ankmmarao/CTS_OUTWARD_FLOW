@@ -1,8 +1,7 @@
+
 package com.cts.outward.controller.maker;
 
-import com.cts.outward.model.Batch;
-import com.cts.outward.service.BatchService;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
@@ -18,8 +17,13 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 
+import com.cts.outward.model.Batch;
+import com.cts.outward.service.BatchService;
+
 public class MakerDashboardController
         extends SelectorComposer<Component> {
+
+    private static final long serialVersionUID = 1L;
 
     // =========================================================
     // WIRED UI COMPONENTS
@@ -37,7 +41,6 @@ public class MakerDashboardController
     @Wire
     private Label inProgressBatches;
 
-
     // =========================================================
     // SERVICE
     // =========================================================
@@ -45,19 +48,16 @@ public class MakerDashboardController
     private final BatchService batchService =
             new BatchService();
 
-
     // =========================================================
     // LOGGED-IN MAKER ID
     // =========================================================
 
     // Temporary Maker ID
-    // Later get this from login/session
-
+    // Later replace with session/login user ID
     private final Integer makerId = 101;
 
-
     // =========================================================
-    // AFTER PAGE LOAD
+    // AFTER COMPOSE
     // =========================================================
 
     @Override
@@ -69,9 +69,8 @@ public class MakerDashboardController
         loadBatches();
     }
 
-
     // =========================================================
-    // LOAD BATCHES FROM DATABASE
+    // LOAD BATCHES
     // =========================================================
 
     private void loadBatches() {
@@ -79,29 +78,29 @@ public class MakerDashboardController
         try {
 
             // -------------------------------------------------
-            // Get batches from database
+            // Get batches for current maker
             // -------------------------------------------------
 
             List<Batch> batches =
                     batchService.findMakerBatches(makerId);
 
+            if (batches == null) {
+                batches = new ArrayList<>();
+            }
 
-            // -------------------------------------------------
-            // Dashboard counts
-            // -------------------------------------------------
+            // =================================================
+            // DASHBOARD COUNTS
+            // =================================================
 
             int total = batches.size();
-
             int available = 0;
-
             int inProgress = 0;
 
-
-            // -------------------------------------------------
-            // Calculate counts
-            // -------------------------------------------------
-
             for (Batch batch : batches) {
+
+                if (batch == null) {
+                    continue;
+                }
 
                 String status =
                         batch.getBatchStatus();
@@ -110,17 +109,19 @@ public class MakerDashboardController
                     continue;
                 }
 
+                // -------------------------------------------------
+                // READY_FOR_ASSIGNMENT = Available
+                // -------------------------------------------------
 
-                // SUBMITTED = available for Maker
-
-                if ("SUBMITTED".equalsIgnoreCase(status)) {
+                if ("READY_FOR_ASSIGNMENT"
+                        .equalsIgnoreCase(status)) {
 
                     available++;
                 }
 
-
-                // LOCKED = assigned to current Maker
-                // IN_PROGRESS = processing started
+                // -------------------------------------------------
+                // LOCKED / IN_PROGRESS = Maker Work
+                // -------------------------------------------------
 
                 if ("LOCKED".equalsIgnoreCase(status)
                         || "IN_PROGRESS".equalsIgnoreCase(status)) {
@@ -128,7 +129,6 @@ public class MakerDashboardController
                     inProgress++;
                 }
             }
-
 
             // =================================================
             // UPDATE DASHBOARD CARDS
@@ -141,14 +141,12 @@ public class MakerDashboardController
                 );
             }
 
-
             if (availableBatches != null) {
 
                 availableBatches.setValue(
                         String.valueOf(available)
                 );
             }
-
 
             if (inProgressBatches != null) {
 
@@ -157,16 +155,14 @@ public class MakerDashboardController
                 );
             }
 
-
             // =================================================
-            // CREATE LIST MODEL
+            // SET LIST MODEL
             // =================================================
 
             ListModelList<Batch> model =
                     new ListModelList<>(batches);
 
             batchList.setModel(model);
-
 
             // =================================================
             // RENDER BATCH TABLE
@@ -181,26 +177,26 @@ public class MakerDashboardController
                                 Batch batch,
                                 int index) {
 
-
-                            // =================================
+                            // =================================================
                             // 1. BATCH NUMBER
-                            // =================================
+                            // =================================================
 
                             Listcell batchNumberCell =
                                     new Listcell();
 
                             batchNumberCell.setLabel(
-                                    batch.getBatchNumber()
+                                    batch.getBatchNumber() != null
+                                            ? batch.getBatchNumber()
+                                            : "-"
                             );
 
                             item.appendChild(
                                     batchNumberCell
                             );
 
-
-                            // =================================
+                            // =================================================
                             // 2. TOTAL CHEQUES
-                            // =================================
+                            // =================================================
 
                             Listcell totalChequeCell =
                                     new Listcell();
@@ -223,10 +219,9 @@ public class MakerDashboardController
                                     totalChequeCell
                             );
 
-
-                            // =================================
+                            // =================================================
                             // 3. STATUS
-                            // =================================
+                            // =================================================
 
                             Listcell statusCell =
                                     new Listcell();
@@ -235,7 +230,6 @@ public class MakerDashboardController
                                     batch.getBatchStatus();
 
                             if (status == null) {
-
                                 status = "-";
                             }
 
@@ -247,10 +241,9 @@ public class MakerDashboardController
                                     statusCell
                             );
 
-
-                            // =================================
-                            // 4. USER ID
-                            // =================================
+                            // =================================================
+                            // 4. CREATED BY
+                            // =================================================
 
                             Listcell userCell =
                                     new Listcell();
@@ -273,20 +266,18 @@ public class MakerDashboardController
                                     userCell
                             );
 
-
-                            // =================================
+                            // =================================================
                             // 5. ASSIGNMENT
-                            // =================================
+                            // =================================================
 
                             Listcell assignmentCell =
                                     new Listcell();
 
+                            // -------------------------------------------------
+                            // READY FOR ASSIGNMENT
+                            // -------------------------------------------------
 
-                            // ---------------------------------
-                            // SUBMITTED
-                            // ---------------------------------
-
-                            if ("SUBMITTED"
+                            if ("READY_FOR_ASSIGNMENT"
                                     .equalsIgnoreCase(status)) {
 
                                 Button assignButton =
@@ -300,10 +291,7 @@ public class MakerDashboardController
 
                                 assignButton.addEventListener(
                                         "onClick",
-                                        event -> {
-
-                                            assignBatch(batch);
-                                        }
+                                        event -> assignBatch(batch)
                                 );
 
                                 assignmentCell.appendChild(
@@ -311,10 +299,9 @@ public class MakerDashboardController
                                 );
                             }
 
-
-                            // ---------------------------------
+                            // -------------------------------------------------
                             // LOCKED
-                            // ---------------------------------
+                            // -------------------------------------------------
 
                             else if ("LOCKED"
                                     .equalsIgnoreCase(status)) {
@@ -333,23 +320,30 @@ public class MakerDashboardController
                                 }
                             }
 
-
-                            // ---------------------------------
+                            // -------------------------------------------------
                             // IN PROGRESS
-                            // ---------------------------------
+                            // -------------------------------------------------
 
                             else if ("IN_PROGRESS"
                                     .equalsIgnoreCase(status)) {
 
-                                assignmentCell.setLabel(
-                                        "In Progress"
-                                );
+                                if (isMakerBatch(batch)) {
+
+                                    assignmentCell.setLabel(
+                                            "In Progress"
+                                    );
+
+                                } else {
+
+                                    assignmentCell.setLabel(
+                                            "Assigned"
+                                    );
+                                }
                             }
 
-
-                            // ---------------------------------
+                            // -------------------------------------------------
                             // OTHER STATUS
-                            // ---------------------------------
+                            // -------------------------------------------------
 
                             else {
 
@@ -358,49 +352,41 @@ public class MakerDashboardController
                                 );
                             }
 
-
                             item.appendChild(
                                     assignmentCell
                             );
 
-
-                            // =================================
+                            // =================================================
                             // 6. OPEN BUTTON
-                            // =================================
+                            // =================================================
 
                             Listcell openCell =
                                     new Listcell();
 
                             Button openButton =
-                                    new Button(
-                                            "Open"
-                                    );
+                                    new Button("Open");
 
                             openButton.setSclass(
                                     "open-button"
                             );
 
-
-                            // ---------------------------------
-                            // Only current Maker can open
-                            // assigned batch
-                            // ---------------------------------
+                            // -------------------------------------------------
+                            // Only current maker can open
+                            // -------------------------------------------------
 
                             if (isMakerBatch(batch)) {
 
                                 openButton.addEventListener(
                                         "onClick",
-                                        event -> {
-
-                                            openBatch(batch);
-                                        }
+                                        event -> openBatch(batch)
                                 );
+
+                                openButton.setDisabled(false);
 
                             } else {
 
                                 openButton.setDisabled(true);
                             }
-
 
                             openCell.appendChild(
                                     openButton
@@ -413,7 +399,6 @@ public class MakerDashboardController
                     }
             );
 
-
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -425,25 +410,21 @@ public class MakerDashboardController
         }
     }
 
-
     // =========================================================
-    // CHECK WHETHER BATCH BELONGS TO CURRENT MAKER
+    // CHECK MAKER ASSIGNMENT
     // =========================================================
 
     private boolean isMakerBatch(Batch batch) {
 
         if (batch == null) {
-
             return false;
         }
 
         if (batch.getCreatedBy() == null) {
-
             return false;
         }
 
         if (makerId == null) {
-
             return false;
         }
 
@@ -451,7 +432,6 @@ public class MakerDashboardController
                 batch.getCreatedBy()
         );
     }
-
 
     // =========================================================
     // ASSIGN BATCH TO MAKER
@@ -461,39 +441,48 @@ public class MakerDashboardController
 
         if (batch == null) {
 
+            Messagebox.show(
+                    "Batch information is missing."
+            );
+
             return;
         }
 
+        String batchNumber =
+                batch.getBatchNumber();
+
+        if (batchNumber == null
+                || batchNumber.trim().isEmpty()) {
+
+            Messagebox.show(
+                    "Batch number is missing."
+            );
+
+            return;
+        }
 
         try {
 
             // -------------------------------------------------
-            // Assign batch in database
+            // Assign batch
             // -------------------------------------------------
 
             batchService.assignBatchToMaker(
-                    batch.getBatchNumber(),
+                    batchNumber,
                     makerId
             );
 
-
-            // -------------------------------------------------
-            // Success message
-            // -------------------------------------------------
-
             Messagebox.show(
                     "Batch "
-                            + batch.getBatchNumber()
+                            + batchNumber
                             + " assigned successfully."
             );
-
 
             // -------------------------------------------------
             // Reload dashboard
             // -------------------------------------------------
 
             loadBatches();
-
 
         } catch (Exception e) {
 
@@ -506,18 +495,44 @@ public class MakerDashboardController
         }
     }
 
-
     // =========================================================
     // OPEN BATCH
     // =========================================================
 
+    /*
+     * Maker Dashboard
+     *
+     *       |
+     *       | Open
+     *       v
+     *
+     * DataEntry.zul?batchNumber=B001
+     *
+     *       |
+     *       v
+     *
+     * DataEntryController
+     *
+     *       |
+     *       v
+     *
+     * All cheques of selected batch
+     */
+
     private void openBatch(Batch batch) {
+
+        // -----------------------------------------------------
+        // Validate batch
+        // -----------------------------------------------------
 
         if (batch == null) {
 
+            Messagebox.show(
+                    "Batch information is missing."
+            );
+
             return;
         }
-
 
         // -----------------------------------------------------
         // Security check
@@ -532,18 +547,36 @@ public class MakerDashboardController
             return;
         }
 
+        // -----------------------------------------------------
+        // Get batch number
+        // -----------------------------------------------------
+
+        String batchNumber =
+                batch.getBatchNumber();
+
+        if (batchNumber == null
+                || batchNumber.trim().isEmpty()) {
+
+            Messagebox.show(
+                    "Batch number is missing."
+            );
+
+            return;
+        }
+
+        // -----------------------------------------------------
+        // Open DataEntry.zul
+        //
+        // IMPORTANT:
+        // No encodeURIComponent()
+        // -----------------------------------------------------
 
         try {
 
-            // -------------------------------------------------
-            // Open Maker batch processing page
-            // -------------------------------------------------
-
             Executions.sendRedirect(
-                    "batch.zul?batchNumber="
-                            + batch.getBatchNumber()
+                    "DataEntry.zul?batchNumber="
+                            + batchNumber
             );
-
 
         } catch (Exception e) {
 
@@ -556,3 +589,4 @@ public class MakerDashboardController
         }
     }
 }
+

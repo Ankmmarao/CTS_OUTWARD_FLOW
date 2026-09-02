@@ -82,7 +82,7 @@ public class SubmittedBatchesController
                             // Status
                             item.appendChild(
                                     new Listcell(
-                                            "SUBMITTED"
+                                            "READY_FOR_ASSIGNMENT"
                                     )
                             );
                         }

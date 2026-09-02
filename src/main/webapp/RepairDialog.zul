@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Cheque Repair" contentType="text/html;charset=UTF-8"?>
+<zk>
+    <window id="repairWindow" title="Cheque Repair" border="normal" width="95%" height="95%" 
+            apply="com.cts.outward.controller.maker.RepairController"
+            closable="true" 
+            maximizable="true">
+        
+        <vlayout width="100%" height="100%" style="padding:15px; box-sizing:border-box;">
+
+            <!-- ============================================= -->
+            <!-- HEADER -->
+            <!-- ============================================= -->
+            <hlayout width="100%" style="margin-bottom:15px;border-bottom:2px solid #FF9800;padding-bottom:10px;">
+                <label value="🔧 Cheque Repair" style="font-size:22px;font-weight:bold;color:#FF9800;" />
+                <label id="batchIdLabel" value="Batch: " style="font-size:16px;margin-left:20px;font-weight:bold;" />
+                <label id="chequeCounterLabel" value="Cheque 1 of 1" style="font-size:16px;margin-left:20px;font-weight:bold;color:#2196F3;" />
+            </hlayout>
+
+            <!-- ============================================= -->
+            <!-- MAIN CONTENT -->
+            <!-- ============================================= -->
+            <hlayout width="100%" height="550px" spacing="15px" style="align-items:stretch;">
+
+                <!-- ========================================= -->
+                <!-- LEFT PANEL - IMAGES -->
+                <!-- ========================================= -->
+                <vlayout width="45%" height="100%" spacing="10px">
+
+                    <!-- FRONT IMAGE -->
+                    <groupbox width="100%" height="50%" mold="3d">
+                        <caption label="📷 Front Image" />
+                        <div width="100%" height="100%" style="border:2px solid #ddd; background:#f9f9f9; box-sizing:border-box; padding:5px; text-align:center; overflow:hidden;border-radius:4px;">
+                            <image id="frontImage" width="100%" height="100%" style="object-fit:contain;" />
+                        </div>
+                    </groupbox>
+
+                    <!-- BACK IMAGE -->
+                    <groupbox width="100%" height="50%" mold="3d">
+                        <caption label="📷 Back Image" />
+                        <div width="100%" height="100%" style="border:2px solid #ddd; background:#f9f9f9; box-sizing:border-box; padding:5px; text-align:center; overflow:hidden;border-radius:4px;">
+                            <image id="backImage" width="100%" height="100%" style="object-fit:contain;" />
+                        </div>
+                    </groupbox>
+
+                </vlayout>
+
+                <!-- ========================================= -->
+                <!-- RIGHT PANEL - DETAILS & ERRORS -->
+                <!-- ========================================= -->
+                <vlayout width="55%" height="100%" spacing="10px">
+
+                    <!-- ERROR SECTION -->
+                    <groupbox width="100%" height="30%" mold="3d" style="border-color:#f44336;">
+                        <caption label="⚠️ Errors Found" style="color:#f44336;font-weight:bold;" />
+                        <div style="padding:10px;background:#ffebee;border-radius:4px;height:100%;overflow:auto;">
+                            <label id="errorMessage" value="The following fields have Data Entry errors. Please correct and save." style="display:block;color:#c62828;font-weight:bold;" />
+                            <label id="errorFieldLabel" value="Account Number Error" style="display:block;color:#d32f2f;margin-top:10px;font-weight:bold;" />
+                            <label value="Scanned Value:" style="display:block;margin-top:10px;font-weight:bold;" />
+                            <label id="scannedValueLabel" value="-" style="display:block;color:#666;margin-left:20px;" />
+                            <label value="* Correct all required fields to continue." style="display:block;margin-top:10px;color:#666;font-style:italic;" />
+                        </div>
+                    </groupbox>
+
+                    <!-- DETAILS SECTION -->
+                    <groupbox width="100%" height="70%" mold="3d">
+                        <caption label="📝 Cheque Details" />
+                        <div style="padding:10px;height:100%;overflow:auto;">
+
+                            <grid width="100%">
+                                <columns>
+                                    <column width="30%" />
+                                    <column width="70%" />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <label value="Cheque Number:" style="font-weight:bold;" />
+                                        <textbox id="chequeNumber" width="100%" readonly="true" style="background:#f5f5f5;" />
+                                    </row>
+                                    <row>
+                                        <label value="Account Number:*" style="font-weight:bold;color:#f44336;" />
+                                        <textbox id="accountNumber" width="100%" />
+                                    </row>
+                                    <row>
+                                        <label value="Drawer Name:" style="font-weight:bold;" />
+                                        <textbox id="drawerName" width="100%" />
+                                    </row>
+                                    <row>
+                                        <label value="Amount:" style="font-weight:bold;" />
+                                        <textbox id="amount" width="100%" />
+                                    </row>
+                                    <row>
+                                        <label value="MICR Code:" style="font-weight:bold;" />
+                                        <textbox id="micrCode" width="100%" />
+                                    </row>
+                                    <row>
+                                        <label value="IFSC Code:" style="font-weight:bold;" />
+                                        <textbox id="ifscCode" width="100%" />
+                                    </row>
+                                    <row>
+                                        <label value="Status:" style="font-weight:bold;" />
+                                        <textbox id="status" width="100%" readonly="true" style="background:#f5f5f5;" />
+                                    </row>
+                                    <row>
+                                        <label value="Checked Date:" style="font-weight:bold;" />
+                                        <datebox id="checkedDate" width="100%" />
+                                    </row>
+                                </rows>
+                            </grid>
+
+                        </div>
+                    </groupbox>
+
+                </vlayout>
+
+            </hlayout>
+
+            <!-- ============================================= -->
+            <!-- BOTTOM - BUTTONS -->
+            <!-- ============================================= -->
+            <hlayout width="100%" spacing="10px" style="margin-top:15px;padding-top:15px;border-top:2px solid #e0e0e0;justify-content:center;">
+
+                <button id="firstButton" label="⏮ First" style="background:#607D8B;color:white;" />
+                <button id="prevButton" label="◀ Prev" style="background:#2196F3;color:white;width:100px;" />
+                
+                <label id="progressLabel" value="1 / 10" style="font-weight:bold;padding:8px 20px;background:#e0e0e0;border-radius:4px;" />
+                
+                <button id="nextButton" label="Next ▶" style="background:#2196F3;color:white;width:100px;" />
+                <button id="lastButton" label="⏭ Last" style="background:#607D8B;color:white;" />
+
+                <label value="|" style="font-weight:bold;color:#ccc;padding:0 10px;" />
+
+                <button id="rejectButton" label="✗ Reject" style="background:#f44336;color:white;width:100px;font-weight:bold;" />
+                <button id="saveButton" label="✓ Save" style="background:#4CAF50;color:white;width:100px;font-weight:bold;" />
+                <button id="saveNextButton" label="✓ Save &amp; Next" style="background:#FF9800;color:white;width:120px;font-weight:bold;" />
+                
+                <label value="|" style="font-weight:bold;color:#ccc;padding:0 10px;" />
+
+                <button id="backToListButton" label="📋 Close" style="background:#795548;color:white;width:130px;" />
+
+            </hlayout>
+
+        </vlayout>
+
+    </window>
+</zk>

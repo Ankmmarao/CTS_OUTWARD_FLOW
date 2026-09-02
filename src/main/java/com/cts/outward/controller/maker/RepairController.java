@@ -8,31 +8,30 @@ import java.util.List;
 import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Window;
 
 import com.cts.outward.model.Cheque;
-import com.cts.outward.model.Batch;
 import com.cts.outward.service.ChequeService;
 import com.cts.outward.service.BatchService;
 
-public class DataEntryController extends SelectorComposer<Component> {
+public class RepairController extends SelectorComposer<Component> {
 
     private static final long serialVersionUID = 1L;
 
+    // =========================================================
     // WIRED COMPONENTS
+    // =========================================================
+
+    // Header
     @Wire
     private Label batchIdLabel;
 
@@ -42,18 +41,14 @@ public class DataEntryController extends SelectorComposer<Component> {
     @Wire
     private Label progressLabel;
 
-    @Wire
-    private Grid chequeGrid;
-
-    @Wire
-    private Rows chequeRows;
-
+    // Images
     @Wire
     private Image frontImage;
 
     @Wire
     private Image backImage;
 
+    // Error Section
     @Wire
     private Label errorMessage;
 
@@ -63,6 +58,7 @@ public class DataEntryController extends SelectorComposer<Component> {
     @Wire
     private Label scannedValueLabel;
 
+    // Fields
     @Wire
     private Textbox chequeNumber;
 
@@ -87,6 +83,7 @@ public class DataEntryController extends SelectorComposer<Component> {
     @Wire
     private Datebox checkedDate;
 
+    // Buttons
     @Wire
     private Button firstButton;
 
@@ -111,35 +108,52 @@ public class DataEntryController extends SelectorComposer<Component> {
     @Wire
     private Button backToListButton;
 
+    // =========================================================
     // SERVICES
+    // =========================================================
+
     private final ChequeService chequeService = new ChequeService();
     private final BatchService batchService = new BatchService();
 
+    // =========================================================
     // STATE
+    // =========================================================
+
     private String batchNumber;
+    private String chequeNumberParam;
     private List<Cheque> cheques;
     private int currentIndex = 0;
     private Cheque currentCheque;
+    private Window repairWindow;
+
+    // =========================================================
+    // AFTER COMPOSE
+    // =========================================================
 
     @Override
     public void doAfterCompose(Component component) throws Exception {
         super.doAfterCompose(component);
 
         System.out.println("==========================================");
-        System.out.println("DATA ENTRY CONTROLLER STARTED");
+        System.out.println("REPAIR CONTROLLER STARTED");
         System.out.println("==========================================");
 
+        repairWindow = (Window) component;
+
+        // Get parameters
         batchNumber = Executions.getCurrent().getParameter("batchNumber");
-        String chequeNumberParam = Executions.getCurrent().getParameter("chequeNumber");
+        chequeNumberParam = Executions.getCurrent().getParameter("chequeNumber");
 
         System.out.println("Batch Number = " + batchNumber);
-        System.out.println("Cheque Number Param = " + chequeNumberParam);
+        System.out.println("Cheque Number = " + chequeNumberParam);
 
         if (batchNumber == null || batchNumber.trim().isEmpty()) {
             Messagebox.show("Batch number is missing.", "Error", Messagebox.OK, Messagebox.ERROR);
+            repairWindow.detach();
             return;
         }
 
+        // Load data
         loadBatchDetails();
         loadCheques();
 
@@ -152,13 +166,21 @@ public class DataEntryController extends SelectorComposer<Component> {
                     return;
                 }
             }
+            Messagebox.show("Cheque not found: " + chequeNumberParam, "Error", Messagebox.OK, Messagebox.ERROR);
         }
 
         // Show first cheque
         if (cheques != null && !cheques.isEmpty()) {
             showCheque(0);
+        } else {
+            Messagebox.show("No cheques found for this batch.", "Info", Messagebox.OK, Messagebox.INFORMATION);
+            repairWindow.detach();
         }
     }
+
+    // =========================================================
+    // LOAD DATA
+    // =========================================================
 
     private void loadBatchDetails() {
         try {
@@ -176,75 +198,15 @@ public class DataEntryController extends SelectorComposer<Component> {
 
             if (cheques == null || cheques.isEmpty()) {
                 System.out.println("No cheques found for batch: " + batchNumber);
-                Messagebox.show("No cheques found for this batch.", "Info", Messagebox.OK, Messagebox.INFORMATION);
                 return;
             }
 
             System.out.println("Loaded " + cheques.size() + " cheques");
-            populateChequeGrid();
 
         } catch (Exception e) {
             e.printStackTrace();
             Messagebox.show("Error loading cheques: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
-    }
-
-    private void populateChequeGrid() {
-        if (chequeRows == null) {
-            System.out.println("chequeRows is NULL");
-            return;
-        }
-
-        chequeRows.getChildren().clear();
-
-        for (int i = 0; i < cheques.size(); i++) {
-            Cheque cheque = cheques.get(i);
-            final int index = i;
-            
-            Row row = new Row();
-            row.setStyle("cursor:pointer;");
-
-            // Cheque Number
-            Label chequeNoLabel = new Label(cheque.getChequeNumber());
-            chequeNoLabel.setStyle("font-weight:bold;");
-            row.appendChild(chequeNoLabel);
-
-            // Status
-            Label statusLabel = new Label(cheque.getStatus() != null ? cheque.getStatus() : "-");
-            statusLabel.setStyle(getStatusStyle(cheque.getStatus()));
-            row.appendChild(statusLabel);
-
-            // Repair Button
-            Button repairBtn = new Button("Repair");
-            repairBtn.setStyle("background:#FF9800;color:white;font-weight:bold;");
-            
-            // Add direct event listener
-            repairBtn.addEventListener(Events.ON_CLICK, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    System.out.println("===== REPAIR BUTTON CLICKED =====");
-                    System.out.println("Index: " + index);
-                    System.out.println("Cheque Number: " + cheques.get(index).getChequeNumber());
-                    showCheque(index);
-                }
-            });
-            
-            row.appendChild(repairBtn);
-
-            // Row click event
-            row.addEventListener(Events.ON_CLICK, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    int rowIndex = chequeRows.getChildren().indexOf(row);
-                    System.out.println("Row clicked at index: " + rowIndex);
-                    showCheque(rowIndex);
-                }
-            });
-
-            chequeRows.appendChild(row);
-        }
-        
-        System.out.println("Populated " + chequeRows.getChildren().size() + " rows");
     }
 
     // =========================================================
@@ -262,6 +224,7 @@ public class DataEntryController extends SelectorComposer<Component> {
 
         System.out.println("==========================================");
         System.out.println("SHOWING CHEQUE: " + currentCheque.getChequeNumber());
+        System.out.println("Index: " + (index + 1) + " of " + cheques.size());
         System.out.println("Status: " + currentCheque.getStatus());
 
         // Update labels
@@ -279,14 +242,11 @@ public class DataEntryController extends SelectorComposer<Component> {
         // Load images
         loadImages();
 
-        // Update error section
-        updateErrorSection();
-
         // Update buttons
         updateButtons();
 
-        // Highlight selected row
-        highlightSelectedRow();
+        // Update error section
+        updateErrorSection();
     }
 
     // =========================================================
@@ -296,33 +256,13 @@ public class DataEntryController extends SelectorComposer<Component> {
     private void populateFields() {
         if (currentCheque == null) return;
 
-        if (chequeNumber != null) {
-            chequeNumber.setValue(valueOrEmpty(currentCheque.getChequeNumber()));
-        }
-        
-        if (accountNumber != null) {
-            accountNumber.setValue(valueOrEmpty(currentCheque.getAccountNumber()));
-        }
-        
-        if (drawerName != null) {
-            drawerName.setValue(valueOrEmpty(currentCheque.getDrawerName()));
-        }
-        
-        if (amount != null) {
-            amount.setValue(currentCheque.getAmount() != null ? currentCheque.getAmount().toString() : "");
-        }
-        
-        if (micrCode != null) {
-            micrCode.setValue(valueOrEmpty(currentCheque.getMicrCode()));
-        }
-        
-        if (ifscCode != null) {
-            ifscCode.setValue(valueOrEmpty(currentCheque.getIfscCode()));
-        }
-        
-        if (status != null) {
-            status.setValue(valueOrEmpty(currentCheque.getStatus()));
-        }
+        chequeNumber.setValue(valueOrEmpty(currentCheque.getChequeNumber()));
+        accountNumber.setValue(valueOrEmpty(currentCheque.getAccountNumber()));
+        drawerName.setValue(valueOrEmpty(currentCheque.getDrawerName()));
+        amount.setValue(currentCheque.getAmount() != null ? currentCheque.getAmount().toString() : "");
+        micrCode.setValue(valueOrEmpty(currentCheque.getMicrCode()));
+        ifscCode.setValue(valueOrEmpty(currentCheque.getIfscCode()));
+        status.setValue(valueOrEmpty(currentCheque.getStatus()));
 
         if (checkedDate != null) {
             if (currentCheque.getCheckedDate() != null) {
@@ -339,7 +279,7 @@ public class DataEntryController extends SelectorComposer<Component> {
     }
 
     // =========================================================
-    // LOAD IMAGES - FIXED VERSION
+    // LOAD IMAGES
     // =========================================================
 
     private void loadImages() {
@@ -356,20 +296,11 @@ public class DataEntryController extends SelectorComposer<Component> {
     }
 
     private void loadImage(Image img, String path) {
-        if (img == null) {
-            System.out.println("Image component is NULL");
-            return;
-        }
+        if (img == null) return;
 
-        // Clear existing image using setSrc which is safer
-        try {
-            img.setSrc(null);
-        } catch (Exception e) {
-            System.out.println("Error clearing image: " + e.getMessage());
-        }
+        //img.setContent(null);
 
         if (path == null || path.trim().isEmpty()) {
-            System.out.println("Image path is NULL/EMPTY");
             return;
         }
 
@@ -381,10 +312,23 @@ public class DataEntryController extends SelectorComposer<Component> {
                 System.out.println("Image loaded successfully: " + path);
             } else {
                 System.out.println("Image not found: " + path);
+                // Try to load default image if available
+                try {
+                    String defaultPath = getClass().getResource("/images/no-image.png").getPath();
+                    if (defaultPath != null) {
+                        File defaultFile = new File(defaultPath);
+                        if (defaultFile.exists()) {
+                            AImage defaultImg = new AImage(defaultFile);
+                            img.setContent(defaultImg);
+                            System.out.println("Loaded default image");
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("No default image available");
+                }
             }
         } catch (Exception e) {
             System.out.println("Error loading image: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -397,22 +341,14 @@ public class DataEntryController extends SelectorComposer<Component> {
 
         String statusText = currentCheque.getStatus();
         
-        if (errorMessage != null) {
-            if (statusText != null && (statusText.contains("Error") || statusText.contains("ERROR"))) {
-                errorMessage.setValue("⚠️ The following fields have Data Entry errors. Please correct and save.");
-            } else {
-                errorMessage.setValue("✅ No errors found.");
-            }
-        }
-        
-        if (errorFieldLabel != null) {
-            if (statusText != null && (statusText.contains("Error") || statusText.contains("ERROR"))) {
-                errorFieldLabel.setValue(statusText);
-                errorFieldLabel.setStyle("color:#d32f2f;font-weight:bold;");
-            } else {
-                errorFieldLabel.setValue("All fields are correct.");
-                errorFieldLabel.setStyle("color:#4CAF50;font-weight:bold;");
-            }
+        if (statusText != null && (statusText.contains("Error") || statusText.contains("ERROR"))) {
+            errorMessage.setValue("⚠️ The following fields have Data Entry errors. Please correct and save.");
+            errorFieldLabel.setValue(statusText);
+            errorFieldLabel.setStyle("color:#d32f2f;font-weight:bold;");
+        } else {
+            errorMessage.setValue("✅ No errors found.");
+            errorFieldLabel.setValue("All fields are correct.");
+            errorFieldLabel.setStyle("color:#4CAF50;font-weight:bold;");
         }
     }
 
@@ -422,63 +358,17 @@ public class DataEntryController extends SelectorComposer<Component> {
 
     private void updateButtons() {
         if (cheques == null || cheques.isEmpty()) {
-            if (firstButton != null) firstButton.setDisabled(true);
-            if (prevButton != null) prevButton.setDisabled(true);
-            if (nextButton != null) nextButton.setDisabled(true);
-            if (lastButton != null) lastButton.setDisabled(true);
+            firstButton.setDisabled(true);
+            prevButton.setDisabled(true);
+            nextButton.setDisabled(true);
+            lastButton.setDisabled(true);
             return;
         }
 
-        if (firstButton != null) firstButton.setDisabled(currentIndex == 0);
-        if (prevButton != null) prevButton.setDisabled(currentIndex == 0);
-        if (nextButton != null) nextButton.setDisabled(currentIndex >= cheques.size() - 1);
-        if (lastButton != null) lastButton.setDisabled(currentIndex >= cheques.size() - 1);
-    }
-
-    // =========================================================
-    // HIGHLIGHT SELECTED ROW
-    // =========================================================
-
-    private void highlightSelectedRow() {
-        if (chequeRows == null || currentCheque == null) return;
-
-        for (Object child : chequeRows.getChildren()) {
-            if (child instanceof Row) {
-                Row row = (Row) child;
-                row.setStyle("cursor:pointer;");
-                if (row.getChildren().size() > 0) {
-                    Label label = (Label) row.getChildren().get(0);
-                    if (label.getValue().equals(currentCheque.getChequeNumber())) {
-                        row.setStyle("background:#FFF3E0;cursor:pointer;font-weight:bold;");
-                    }
-                }
-            }
-        }
-    }
-
-    // =========================================================
-    // UPDATE GRID ROW STATUS
-    // =========================================================
-
-    private void updateGridRowStatus() {
-        if (chequeRows == null || currentCheque == null) return;
-
-        for (Object child : chequeRows.getChildren()) {
-            if (child instanceof Row) {
-                Row row = (Row) child;
-                if (row.getChildren().size() > 0) {
-                    Label chequeLabel = (Label) row.getChildren().get(0);
-                    if (chequeLabel.getValue().equals(currentCheque.getChequeNumber())) {
-                        if (row.getChildren().size() > 1) {
-                            Label statusLabel = (Label) row.getChildren().get(1);
-                            statusLabel.setValue(currentCheque.getStatus());
-                            statusLabel.setStyle(getStatusStyle(currentCheque.getStatus()));
-                        }
-                        break;
-                    }
-                }
-            }
-        }
+        firstButton.setDisabled(currentIndex == 0);
+        prevButton.setDisabled(currentIndex == 0);
+        nextButton.setDisabled(currentIndex >= cheques.size() - 1);
+        lastButton.setDisabled(currentIndex >= cheques.size() - 1);
     }
 
     // =========================================================
@@ -566,8 +456,7 @@ public class DataEntryController extends SelectorComposer<Component> {
             // Update in database
             chequeService.updateCheque(currentCheque);
 
-            // Update UI
-            updateGridRowStatus();
+            // Update error section
             updateErrorSection();
 
             Messagebox.show("✅ Cheque saved successfully.", "Success", Messagebox.OK, Messagebox.INFORMATION);
@@ -599,7 +488,6 @@ public class DataEntryController extends SelectorComposer<Component> {
             if (response == Messagebox.YES) {
                 currentCheque.setStatus("REJECTED");
                 chequeService.updateCheque(currentCheque);
-                updateGridRowStatus();
                 updateErrorSection();
                 Messagebox.show("Cheque rejected.", "Success", Messagebox.OK, Messagebox.INFORMATION);
                 goNext();
@@ -615,28 +503,19 @@ public class DataEntryController extends SelectorComposer<Component> {
     public void backToList() {
         System.out.println("Back to List button clicked");
         try {
-            Executions.sendRedirect("MakerDashboard.zul");
+            if (repairWindow != null) {
+                repairWindow.detach();
+            }
+            Executions.sendRedirect("DataEntry.zul?batchNumber=" + batchNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Unable to return to dashboard: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unable to return: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
         }
     }
 
     // =========================================================
     // HELPER METHODS
     // =========================================================
-
-    private String getStatusStyle(String status) {
-        if (status == null) return "";
-        if (status.contains("Error") || status.contains("ERROR")) {
-            return "color:red;font-weight:bold;";
-        } else if ("CORRECTED".equals(status)) {
-            return "color:green;font-weight:bold;";
-        } else if ("REJECTED".equals(status)) {
-            return "color:red;font-weight:bold;";
-        }
-        return "color:#333;";
-    }
 
     private String valueOrEmpty(String value) {
         return value == null ? "" : value;
