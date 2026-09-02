@@ -1,335 +1,368 @@
 <?page title="Maker Dashboard"?>
 
-<?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
+<?link rel="stylesheet" type="text/css" href="/css/maker.css"?>
 
 <zk>
 
-<window
-    border="none"
-    width="100%"
-    height="100%"
-    apply="com.cts.outward.controller.maker.MakerDashboardController">
-
-    <vlayout
-        spacing="0"
+    <window
+        id="makerDashboardWindow"
+        border="none"
         width="100%"
         height="100%"
-        sclass="maker-page">
+        apply="com.cts.outward.controller.maker.MakerDashboardController">
 
-        <!-- ================= HEADER ================= -->
+        <vlayout
+            width="100%"
+            height="100%"
+            spacing="0"
+            sclass="maker-page">
 
-        <div sclass="top-header">
+
+            <!-- ================================================= -->
+            <!-- HEADER                                            -->
+            <!-- ================================================= -->
+
+            <div sclass="top-header">
+
+                <hlayout
+                    width="100%"
+                    height="70px"
+                    valign="middle">
+
+                    <label
+                        value="☰"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="CTS OUTWARD / MAKER"
+                        sclass="header-title"/>
+
+                    <div hflex="1"/>
+
+                    <label
+                        value="▣  Date : 01-09-2026"
+                        sclass="header-info"/>
+
+                    <label
+                        value="◷  Last Login : 01-09-2026 09:15 AM"
+                        sclass="header-info"/>
+
+                    <label
+                        value="♧"
+                        sclass="header-icon"/>
+
+                    <label
+                        value="◯"
+                        sclass="header-icon"/>
+
+                </hlayout>
+
+            </div>
+
+
+            <!-- ================================================= -->
+            <!-- BODY                                               -->
+            <!-- ================================================= -->
 
             <hlayout
                 width="100%"
-                height="70px"
-                valign="middle">
-
-                <label
-                    value="☰"
-                    sclass="header-icon"/>
-
-                <label
-                    value="CTS OUTWARD / MAKER"
-                    sclass="header-title"/>
-
-                <div hflex="1"/>
-
-                <label
-                    value="▣  Date : 01-09-2026"
-                    sclass="header-info"/>
-
-                <label
-                    value="◷  Last Login : 01-09-2026 09:15 AM"
-                    sclass="header-info"/>
-
-                <label
-                    value="♧"
-                    sclass="header-icon"/>
-
-                <label
-                    value="◯"
-                    sclass="header-icon"/>
-
-            </hlayout>
-
-        </div>
+                vflex="1"
+                spacing="0">
 
 
-        <!-- ================= BODY ================= -->
+                <!-- ================================================= -->
+                <!-- SIDEBAR                                            -->
+                <!-- ================================================= -->
 
-        <hlayout
-            width="100%"
-            height="calc(100% - 70px)"
-            spacing="0">
-
-
-            <!-- ================= SIDEBAR ================= -->
-
-            <vlayout
-                spacing="5px"
-                sclass="sidebar">
-
-                <!-- DASHBOARD -->
-
-                <div
-                    sclass="sidebar-item sidebar-item-selected">
-
-                    <hlayout
-                        height="55px"
-                        valign="middle">
-
-                        <label
-                            value="⌂"
-                            sclass="sidebar-icon-selected"/>
-
-                        <label
-                            value="Dashboard"
-                            sclass="sidebar-text-selected"/>
-
-                    </hlayout>
-
-                </div>
+                <vlayout
+                    width="240px"
+                    vflex="1"
+                    spacing="5px"
+                    sclass="sidebar">
 
 
-                <!-- DATA ENTRY -->
+                    <!-- DASHBOARD -->
 
-                <div
-                    sclass="sidebar-item">
+                    <div
+                        id="dashboardBtn"
+                        sclass="sidebar-item sidebar-item-selected">
 
-                    <hlayout
-                        height="55px"
-                        valign="middle">
+                        <hlayout
+                            height="55px"
+                            valign="middle">
 
-                        <label
-                            value="▣"
-                            sclass="sidebar-icon"/>
+                            <label
+                                value="⌂"
+                                sclass="sidebar-icon-selected"/>
 
-                        <label
-                            value="Data Entry"
-                            sclass="sidebar-text"/>
+                            <label
+                                value="Dashboard"
+                                sclass="sidebar-text-selected"/>
 
-                    </hlayout>
+                        </hlayout>
 
-                </div>
-
-
-                <!-- MICR REPAIR -->
-
-                <div
-                    sclass="sidebar-item">
-
-                    <hlayout
-                        height="55px"
-                        valign="middle">
-
-                        <label
-                            value="✎"
-                            sclass="sidebar-icon"/>
-
-                        <label
-                            value="MICR Repair"
-                            sclass="sidebar-text"/>
-
-                    </hlayout>
-
-                </div>
+                    </div>
 
 
-                <!-- AMOUNT AND ACCOUNT -->
+                    <!-- DATA ENTRY -->
 
-                <div
-                    sclass="sidebar-item">
+                    <div
+                        id="dataEntryBtn"
+                        sclass="sidebar-item">
 
-                    <hlayout
-                        height="55px"
-                        valign="middle">
+                        <hlayout
+                            height="55px"
+                            valign="middle">
 
-                        <label
-                            value="₹"
-                            sclass="sidebar-icon"/>
+                            <label
+                                value="▣"
+                                sclass="sidebar-icon"/>
 
-                        <label
-                            value="Amount And Account"
-                            sclass="sidebar-text"/>
+                            <label
+                                value="Data Entry"
+                                sclass="sidebar-text"/>
 
-                    </hlayout>
+                        </hlayout>
 
-                </div>
-
-
-                <!-- SEND TO CHECKER -->
-
-                <div
-                    sclass="sidebar-item">
-
-                    <hlayout
-                        height="55px"
-                        valign="middle">
-
-                        <label
-                            value="➜"
-                            sclass="sidebar-icon"/>
-
-                        <label
-                            value="Send to Checker"
-                            sclass="sidebar-text"/>
-
-                    </hlayout>
-
-                </div>
-
-            </vlayout>
+                    </div>
 
 
-            <!-- ================= MAIN CONTENT ================= -->
+                    <!-- MICR REPAIR -->
 
-            <vlayout
-                hflex="1"
-                spacing="20px"
-                sclass="main-content">
+                    <div
+                        id="micrRepairBtn"
+                        sclass="sidebar-item">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="✎"
+                                sclass="sidebar-icon"/>
+
+                            <label
+                                value="MICR Repair"
+                                sclass="sidebar-text"/>
+
+                        </hlayout>
+
+                    </div>
 
 
-                <!-- PAGE TITLE -->
+                    <!-- AMOUNT AND ACCOUNT -->
 
-                <vlayout spacing="5px">
+                    <div
+                        id="amountAccountBtn"
+                        sclass="sidebar-item">
 
-                    <label
-                        value="Maker Dashboard"
-                        sclass="page-title"/>
+                        <hlayout
+                            height="55px"
+                            valign="middle">
 
-                    <label
-                        value="Available batches assigned for processing."
-                        sclass="page-subtitle"/>
+                            <label
+                                value="₹"
+                                sclass="sidebar-icon"/>
+
+                            <label
+                                value="Amount And Account"
+                                sclass="sidebar-text"/>
+
+                        </hlayout>
+
+                    </div>
+
+
+                    <!-- SEND TO CHECKER -->
+
+                    <div
+                        id="sendCheckerBtn"
+                        sclass="sidebar-item">
+
+                        <hlayout
+                            height="55px"
+                            valign="middle">
+
+                            <label
+                                value="➜"
+                                sclass="sidebar-icon"/>
+
+                            <label
+                                value="Send to Checker"
+                                sclass="sidebar-text"/>
+
+                        </hlayout>
+
+                    </div>
 
                 </vlayout>
 
 
-                <!-- ================= SUMMARY ================= -->
+                <!-- ================================================= -->
+                <!-- MAIN CONTENT                                       -->
+                <!-- ================================================= -->
 
-                <hlayout
-                    spacing="20px">
-
-                    <!-- TOTAL BATCHES -->
-
-                    <groupbox
-                        width="220px"
-                        height="110px"
-                        closable="false"
-                        sclass="summary-card">
-
-                        <caption
-                            label="Total Batches"/>
-
-                        <label
-                            id="totalBatches"
-                            value="0"
-                            style="font-size:28px;
-                                   font-weight:bold;
-                                   padding:20px;"/>
-
-                    </groupbox>
-
-
-                    <!-- AVAILABLE -->
-
-                    <groupbox
-                        width="220px"
-                        height="110px"
-                        closable="false"
-                        sclass="summary-card">
-
-                        <caption
-                            label="Available Batches"/>
-
-                        <label
-                            id="availableBatches"
-                            value="0"
-                            style="font-size:28px;
-                                   font-weight:bold;
-                                   padding:20px;"/>
-
-                    </groupbox>
-
-
-                    <!-- IN PROGRESS -->
-
-                    <groupbox
-                        width="220px"
-                        height="110px"
-                        closable="false"
-                        sclass="summary-card">
-
-                        <caption
-                            label="In Progress"/>
-
-                        <label
-                            id="inProgressBatches"
-                            value="0"
-                            style="font-size:28px;
-                                   font-weight:bold;
-                                   padding:20px;"/>
-
-                    </groupbox>
-
-                </hlayout>
-
-
-                <!-- ================= BATCH TABLE ================= -->
-
-                <groupbox
+                <vlayout
                     hflex="1"
-                    closable="false">
+                    vflex="1"
+                    spacing="20px"
+                    sclass="main-content">
 
-                    <caption
-                        label="Batches"/>
+
+                    <!-- ================================================= -->
+                    <!-- PAGE TITLE                                        -->
+                    <!-- ================================================= -->
+
+                    <vlayout
+                        spacing="5px">
+
+                        <label
+                            value="Maker Dashboard"
+                            sclass="page-title"/>
+
+                        <label
+                            value="Available batches assigned for processing."
+                            sclass="page-subtitle"/>
+
+                    </vlayout>
 
 
-                    <listbox
-                        id="batchList"
-                        width="100%"
-                        height="100%"
-                        emptyMessage="No batches available.">
+                    <!-- ================================================= -->
+                    <!-- SUMMARY                                            -->
+                    <!-- ================================================= -->
 
-                        <listhead>
+                    <hlayout
+                        spacing="20px">
 
-                            <listheader
-                                label="Batch No"
-                                width="18%"/>
 
-                            <listheader
-                                label="Total Cheques"
-                                width="15%"/>
+                        <!-- TOTAL -->
 
-                            <listheader
-                                label="Status"
-                                width="15%"/>
+                        <groupbox
+                            width="220px"
+                            height="110px"
+                            closable="false"
+                            sclass="summary-card">
 
-                            <listheader
-                                label="User ID"
-                                width="15%"/>
+                            <caption
+                                label="Total Batches"/>
 
-                            <listheader
-                                label="Assignment"
-                                width="20%"/>
+                            <label
+                                id="totalBatches"
+                                value="0"
+                                style="font-size:28px;
+                                       font-weight:bold;
+                                       padding:20px;"/>
 
-                            <listheader
-                                label="Action"
-                                width="17%"/>
+                        </groupbox>
 
-                        </listhead>
 
-                    </listbox>
+                        <!-- AVAILABLE -->
 
-                </groupbox>
+                        <groupbox
+                            width="220px"
+                            height="110px"
+                            closable="false"
+                            sclass="summary-card">
 
-            </vlayout>
+                            <caption
+                                label="Available Batches"/>
 
-        </hlayout>
+                            <label
+                                id="availableBatches"
+                                value="0"
+                                style="font-size:28px;
+                                       font-weight:bold;
+                                       padding:20px;"/>
 
-    </vlayout>
+                        </groupbox>
 
-</window>
 
+                        <!-- IN PROGRESS -->
+
+                        <groupbox
+                            width="220px"
+                            height="110px"
+                            closable="false"
+                            sclass="summary-card">
+
+                            <caption
+                                label="In Progress"/>
+
+                            <label
+                                id="inProgressBatches"
+                                value="0"
+                                style="font-size:28px;
+                                       font-weight:bold;
+                                       padding:20px;"/>
+
+                        </groupbox>
+
+                    </hlayout>
+
+
+                    <!-- ================================================= -->
+                    <!-- BATCHES                                            -->
+                    <!-- ================================================= -->
+
+                    <groupbox
+                        hflex="1"
+                        vflex="1"
+                        closable="false"
+                        sclass="batch-container">
+
+                        <caption
+                            label="Batches"/>
+
+
+                        <!-- ================================================= -->
+                        <!-- LISTBOX                                           -->
+                        <!-- ================================================= -->
+
+                        <listbox
+                            id="batchList"
+                            width="100%"
+                            height="100%"
+                            emptyMessage="No batches available."
+                            sclass="batch-list">
+
+                            <listhead>
+
+                                <listheader
+                                    label="Batch No"
+                                    width="18%"/>
+
+                                <listheader
+                                    label="Total Cheques"
+                                    width="15%"/>
+
+                                <listheader
+                                    label="Status"
+                                    width="15%"/>
+
+                                <listheader
+                                    label="User ID"
+                                    width="15%"/>
+
+                                <listheader
+                                    label="Assignment"
+                                    width="20%"/>
+
+                                <listheader
+                                    label="Action"
+                                    width="17%"/>
+
+                            </listhead>
+
+                        </listbox>
+
+                    </groupbox>
+
+                </vlayout>
+
+            </hlayout>
+
+        </vlayout>
+
+    </window>
 
 </zk>

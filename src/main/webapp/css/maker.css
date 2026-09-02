@@ -1,0 +1,883 @@
+/* =========================================================
+   MAKER MODULE
+   Separate CSS
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.maker-page {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f5f7fa;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.maker-page .top-header {
+    width: 100%;
+    height: 70px;
+    background: #12355b;
+    color: white;
+    box-sizing: border-box;
+}
+
+.maker-page .header-title {
+    font-size: 21px;
+    font-weight: bold;
+    color: white;
+    margin-left: 12px;
+}
+
+.maker-page .header-icon {
+    color: white;
+    font-size: 22px;
+    padding-left: 18px;
+    padding-right: 18px;
+}
+
+.maker-page .header-info {
+    color: white;
+    font-size: 13px;
+    margin-right: 25px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.maker-page .sidebar {
+    width: 240px;
+    height: 100%;
+    min-width: 240px;
+    background: #12355b;
+    box-sizing: border-box;
+    padding-top: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+
+/* SIDEBAR ITEM */
+
+.maker-page .sidebar-item {
+    width: 100%;
+    height: 55px;
+    box-sizing: border-box;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+
+/* HOVER */
+
+.maker-page .sidebar-item:hover {
+    background: #1d4d7c;
+}
+
+
+/* SELECTED */
+
+.maker-page .sidebar-item-selected {
+    background: #1d4d7c;
+    border-left: 4px solid #ff9800;
+}
+
+
+/* SIDEBAR ICON */
+
+.maker-page .sidebar-icon {
+    width: 45px;
+    min-width: 45px;
+    text-align: center;
+    color: #d9e5f2;
+    font-size: 20px;
+    margin-left: 8px;
+}
+
+
+/* SELECTED ICON */
+
+.maker-page .sidebar-icon-selected {
+    width: 45px;
+    min-width: 45px;
+    text-align: center;
+    color: #ff9800;
+    font-size: 20px;
+    margin-left: 8px;
+}
+
+
+/* SIDEBAR TEXT */
+
+.maker-page .sidebar-text {
+    color: #d9e5f2;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* SELECTED TEXT */
+
+.maker-page .sidebar-text-selected {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.maker-page .main-content {
+    min-width: 0;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 25px;
+    background: #f5f7fa;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
+
+.maker-page .page-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #12355b;
+}
+
+.maker-page .page-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.maker-page .summary-card {
+    background: white;
+    border: 1px solid #dce3eb;
+    border-radius: 6px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================================================
+   BATCH GROUPBOX
+   ========================================================= */
+
+.maker-page .batch-container {
+    min-height: 0;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   BATCH TABLE
+   ========================================================= */
+
+.maker-page .batch-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+
+/* Listbox */
+
+.maker-page .batch-list {
+    width: 100%;
+}
+
+
+/* =========================================================
+   ZK LISTBOX
+   ========================================================= */
+
+.maker-page .z-listbox {
+    border: 1px solid #d9e1ea;
+    background: white;
+}
+
+
+/* TABLE HEADER */
+
+.maker-page .z-listhead {
+    background: #12355b;
+}
+
+.maker-page .z-listheader {
+    background: #12355b;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #315779;
+}
+
+
+/* TABLE ROW */
+
+.maker-page .z-listitem {
+    height: 42px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+
+/* Alternate rows */
+
+.maker-page .z-listitem:nth-child(even) {
+    background: #f8fafc;
+}
+
+
+/* Row hover */
+
+.maker-page .z-listitem:hover {
+    background: #eef5fb;
+}
+
+
+/* TABLE CELL */
+
+.maker-page .z-listcell {
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #263238;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.maker-page .batch-scroll::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+.maker-page .batch-scroll::-webkit-scrollbar-track {
+    background: #edf1f5;
+}
+
+.maker-page .batch-scroll::-webkit-scrollbar-thumb {
+    background: #9aa9b8;
+    border-radius: 6px;
+}
+
+.maker-page .batch-scroll::-webkit-scrollbar-thumb:hover {
+    background: #6f8192;
+}
+
+
+/* =========================================================
+   BUTTONS INSIDE BATCH TABLE
+   ========================================================= */
+
+.maker-page .batch-open-button {
+    background: #2196f3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.maker-page .batch-open-button:hover {
+    background: #1976d2;
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.maker-page .status-available {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.maker-page .status-progress {
+    color: #ef6c00;
+    font-weight: bold;
+}
+
+.maker-page .status-locked {
+    color: #c62828;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   GENERAL ZK FIXES
+   ========================================================= */
+
+.maker-page .z-vlayout {
+    min-height: 0;
+}
+
+.maker-page .z-hlayout {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   DATA ENTRY PAGE
+   ========================================================= */
+
+.maker-data-entry {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #f5f7fa;
+}
+
+
+/* Data entry content */
+
+.maker-data-entry .data-entry-content {
+    min-width: 0;
+    min-height: 0;
+    overflow: auto;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+
+/* Data entry header */
+
+.maker-data-entry .data-entry-header {
+    border-bottom: 2px solid #ff9800;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+    .maker-page .sidebar {
+        width: 210px;
+        min-width: 210px;
+    }
+
+    .maker-page .main-content {
+        padding: 18px;
+    }
+
+    .maker-page .header-info {
+        margin-right: 10px;
+        font-size: 12px;
+    }
+
+    .maker-page .summary-card {
+        width: 190px;
+    }
+}
+
+
+@media screen and (max-width: 800px) {
+
+    .maker-page .sidebar {
+        width: 190px;
+        min-width: 190px;
+    }
+
+    .maker-page .sidebar-text,
+    .maker-page .sidebar-text-selected {
+        font-size: 12px;
+    }
+
+    .maker-page .main-content {
+        padding: 12px;
+    }
+
+    .maker-page .page-title {
+        font-size: 23px;
+    }
+}
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.page {
+    background: #f5f7fa;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header-line {
+    border-bottom: 3px solid #ff9800;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+}
+
+.page-title {
+    font-size: 25px;
+    font-weight: bold;
+    color: #172033;
+}
+
+.page-subtitle {
+    font-size: 15px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+.batch-badge {
+    background: #eaf4ff;
+    color: #0759a5;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 18px;
+}
+
+.counter {
+    color: #334155;
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+   ========================================================= */
+
+.main-content {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LEFT PANEL
+   ========================================================= */
+
+.left-panel {
+    background: white;
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+    padding: 18px;
+    box-sizing: border-box;
+}
+
+.image-navigation {
+    margin-bottom: 12px;
+}
+
+.record-label {
+    color: #475569;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.image-title {
+    color: #172033;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.back-title {
+    margin-top: 15px;
+}
+
+
+/* =========================================================
+   FRONT CHEQUE
+   ========================================================= */
+
+.cheque-frame {
+    width: 100%;
+    height: 260px;
+
+    background: #f8fafc;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.cheque-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   BACK CHEQUE
+   ========================================================= */
+
+.back-frame {
+    width: 100%;
+    height: 220px;
+
+    background: #f8fafc;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+
+    padding: 8px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+.back-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+
+
+/* =========================================================
+   OCR
+   ========================================================= */
+
+.ocr-box {
+    margin-top: 14px;
+
+    padding: 13px;
+
+    border: 1px solid #a9dfb8;
+    border-radius: 6px;
+
+    background: #f1fbf3;
+    box-sizing: border-box;
+}
+
+.ocr-title {
+    display: block;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    color: #16813d;
+}
+
+.micr-text {
+    display: block;
+
+    margin-top: 8px;
+
+    font-family: monospace;
+    font-size: 17px;
+    font-weight: bold;
+
+    color: #008a3e;
+}
+
+
+/* =========================================================
+   RIGHT PANEL
+   ========================================================= */
+
+.right-panel {
+    background: white;
+
+    border: 1px solid #d8dee8;
+    border-radius: 6px;
+
+    padding: 18px;
+
+    box-sizing: border-box;
+}
+
+.details-header {
+    margin-bottom: 12px;
+}
+
+.details-title {
+    color: #172033;
+
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.repair-badge {
+    color: #e88300;
+
+    font-size: 15px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.details-grid {
+    border: 1px solid #d8dee8;
+    border-radius: 5px;
+
+    overflow: hidden;
+}
+
+.details-grid .z-row {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.field-label {
+    color: #172033;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    padding: 13px 15px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ZK TEXTBOX
+   ========================================================= */
+
+.field {
+    margin: 8px 12px !important;
+
+    width: calc(100% - 24px) !important;
+
+    box-sizing: border-box;
+}
+
+.field .z-textbox-input {
+    border: 1px solid #cbd5e1;
+
+    border-radius: 5px;
+
+    padding: 9px 11px;
+
+    font-size: 14px;
+
+    color: #334155;
+
+    box-sizing: border-box;
+}
+
+.field input {
+    border: 1px solid #cbd5e1;
+
+    border-radius: 5px;
+
+    padding: 9px 11px;
+
+    font-size: 14px;
+
+    box-sizing: border-box;
+}
+
+.readonly-field input,
+.readonly-field .z-textbox-input {
+    background: #f1f3f5;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   HIGHLIGHT IFSC ROW
+   ========================================================= */
+
+.highlight-row {
+    background: #e4f3ff;
+}
+
+
+/* =========================================================
+   REMARKS
+   ========================================================= */
+
+.remarks textarea,
+.remarks .z-textbox-input {
+    min-height: 72px;
+}
+
+
+/* =========================================================
+   PROGRESS
+   ========================================================= */
+
+.progress-header {
+    margin-top: 18px;
+}
+
+.progress-title {
+    color: #172033;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.progress-value {
+    color: #172033;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.progress-meter {
+    margin-top: 6px;
+}
+
+.z-progressmeter {
+    height: 10px;
+
+    border-radius: 5px;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.nav-button {
+    background: #087fea;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+.secondary-button {
+    background: #455a64;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+.back-list-button {
+    background: #795548;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+.reject-button {
+    background: #ef3f3f;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+.save-button {
+    background: #159447;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+.save-next-button {
+    background: #ff9418;
+
+    color: white;
+
+    border: none;
+    border-radius: 4px;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   BOTTOM BAR
+   ========================================================= */
+
+.bottom-bar {
+    border-top: 1px solid #d8dee8;
+
+    margin-top: 18px;
+    padding-top: 14px;
+
+    box-sizing: border-box;
+}
+
+.bottom-progress {
+    min-width: 80px;
+
+    padding: 9px 18px;
+
+    text-align: center;
+
+    color: #334155;
+
+    background: #eef1f4;
+
+    border: 1px solid #d5dbe2;
+    border-radius: 4px;
+
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.separator {
+    color: #94a3b8;
+
+    font-size: 20px;
+
+    margin: 0 5px;
+}

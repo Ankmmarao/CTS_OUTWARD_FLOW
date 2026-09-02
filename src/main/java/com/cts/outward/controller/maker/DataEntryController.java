@@ -1,67 +1,54 @@
 package com.cts.outward.controller.maker;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.time.ZoneId;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.zkoss.image.AImage;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
 import org.zkoss.zk.ui.select.annotation.Wire;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Grid;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 
 import com.cts.outward.model.Cheque;
-import com.cts.outward.model.Batch;
 import com.cts.outward.service.ChequeService;
-import com.cts.outward.service.BatchService;
 
-public class DataEntryController extends SelectorComposer<Component> {
+public class DataEntryController
+        extends SelectorComposer<Component> {
 
     private static final long serialVersionUID = 1L;
 
-    // WIRED COMPONENTS
-    @Wire
-    private Label batchIdLabel;
+    // =========================================================
+    // LIST
+    // =========================================================
 
     @Wire
-    private Label chequeCounterLabel;
+    private Listbox chequeList;
 
     @Wire
-    private Label progressLabel;
+    private Label batchNumberLabel;
 
     @Wire
-    private Grid chequeGrid;
+    private Label chequeCount;
 
     @Wire
-    private Rows chequeRows;
+    private Label errorCount;
 
-    @Wire
-    private Image frontImage;
-
-    @Wire
-    private Image backImage;
-
-    @Wire
-    private Label errorMessage;
-
-    @Wire
-    private Label errorFieldLabel;
-
-    @Wire
-    private Label scannedValueLabel;
+    // =========================================================
+    // CHEQUE DETAILS
+    // =========================================================
 
     @Wire
     private Textbox chequeNumber;
@@ -87,558 +74,936 @@ public class DataEntryController extends SelectorComposer<Component> {
     @Wire
     private Datebox checkedDate;
 
-    @Wire
-    private Button firstButton;
+    // =========================================================
+    // IMAGES
+    // =========================================================
 
     @Wire
-    private Button prevButton;
+    private Image frontImage;
 
     @Wire
-    private Button nextButton;
+    private Image backImage;
 
-    @Wire
-    private Button lastButton;
+    // =========================================================
+    // SERVICE
+    // =========================================================
 
-    @Wire
-    private Button saveButton;
+    private final ChequeService chequeService =
+            new ChequeService();
 
-    @Wire
-    private Button saveNextButton;
+    // =========================================================
+    // DATA
+    // =========================================================
 
-    @Wire
-    private Button rejectButton;
-
-    @Wire
-    private Button backToListButton;
-
-    // SERVICES
-    private final ChequeService chequeService = new ChequeService();
-    private final BatchService batchService = new BatchService();
-
-    // STATE
     private String batchNumber;
-    private List<Cheque> cheques;
-    private int currentIndex = 0;
+
+    private List<Cheque> cheques =
+            new ArrayList<>();
+
+    private int currentIndex = -1;
+
     private Cheque currentCheque;
 
-    @Override
-    public void doAfterCompose(Component component) throws Exception {
-        super.doAfterCompose(component);
+    // =========================================================
+    // AFTER COMPOSE
+    // =========================================================
+    private void openCheque(Cheque cheque) {
 
-        System.out.println("==========================================");
-        System.out.println("DATA ENTRY CONTROLLER STARTED");
-        System.out.println("==========================================");
+        if (cheque == null) {
+            Messagebox.show("Cheque details not available.");
+            return;
+        }
 
-        batchNumber = Executions.getCurrent().getParameter("batchNumber");
-        String chequeNumberParam = Executions.getCurrent().getParameter("chequeNumber");
-
-        System.out.println("Batch Number = " + batchNumber);
-        System.out.println("Cheque Number Param = " + chequeNumberParam);
+        String batchNumber = cheque.getBatchNumber();
+        String chequeNumber = cheque.getChequeNumber();
 
         if (batchNumber == null || batchNumber.trim().isEmpty()) {
-            Messagebox.show("Batch number is missing.", "Error", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Batch number is missing.");
             return;
         }
 
-        loadBatchDetails();
+        if (chequeNumber == null || chequeNumber.trim().isEmpty()) {
+            Messagebox.show("Cheque number is missing.");
+            return;
+        }
+
+        Executions.sendRedirect(
+            "dataentry_repair.zul"
+            + "?batchNumber="
+            + Executions.encodeURL(batchNumber)
+            + "&chequeNumber="
+            + Executions.encodeURL(chequeNumber)
+        );
+    }
+
+    @Override
+    public void doAfterCompose(Component component)
+            throws Exception {
+
+        super.doAfterCompose(component);
+
+        /*
+         * Get batch number from:
+         *
+         * DataEntry.zul?batchNumber=BATCH001
+         */
+        batchNumber =
+                Executions.getCurrent()
+                        .getParameter("batchNumber");
+
+        if (batchNumber == null ||
+                batchNumber.trim().isEmpty()) {
+
+            Messagebox.show(
+                    "Batch number is missing."
+            );
+
+            return;
+        }
+
+        batchNumber = batchNumber.trim();
+
+        // Display batch number
+        if (batchNumberLabel != null) {
+
+            batchNumberLabel.setValue(
+                    "Batch: " + batchNumber
+            );
+        }
+
+        // Load ALL cheques for this batch
         loadCheques();
-
-        // If cheque number is passed, show that specific cheque
-        if (chequeNumberParam != null && !chequeNumberParam.trim().isEmpty() && cheques != null) {
-            for (int i = 0; i < cheques.size(); i++) {
-                if (cheques.get(i).getChequeNumber().equals(chequeNumberParam)) {
-                    System.out.println("Found cheque: " + chequeNumberParam + " at index: " + i);
-                    showCheque(i);
-                    return;
-                }
-            }
-        }
-
-        // Show first cheque
-        if (cheques != null && !cheques.isEmpty()) {
-            showCheque(0);
-        }
     }
 
-    private void loadBatchDetails() {
-        try {
-            if (batchIdLabel != null) {
-                batchIdLabel.setValue("Batch: " + batchNumber);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    // =========================================================
+    // LOAD ALL CHEQUES
+    // =========================================================
 
     private void loadCheques() {
-        try {
-            cheques = chequeService.findChequesByBatch(batchNumber);
 
-            if (cheques == null || cheques.isEmpty()) {
-                System.out.println("No cheques found for batch: " + batchNumber);
-                Messagebox.show("No cheques found for this batch.", "Info", Messagebox.OK, Messagebox.INFORMATION);
-                return;
+        try {
+
+            /*
+             * IMPORTANT:
+             *
+             * This loads ALL cheques belonging
+             * to the selected batch.
+             *
+             * It does NOT filter by ERROR.
+             */
+            cheques =
+                    chequeService.findChequesByBatch(
+                            batchNumber
+                    );
+
+            if (cheques == null) {
+
+                cheques = new ArrayList<>();
             }
 
-            System.out.println("Loaded " + cheques.size() + " cheques");
-            populateChequeGrid();
+            updateCounts();
+
+            displayChequeList();
+
+            /*
+             * Automatically open first cheque
+             * if available.
+             */
+            if (!cheques.isEmpty()) {
+
+                currentIndex = 0;
+
+                loadChequeDetails(
+                        cheques.get(0)
+                );
+
+                chequeList.setSelectedIndex(0);
+            }
 
         } catch (Exception e) {
+
             e.printStackTrace();
-            Messagebox.show("Error loading cheques: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+
+            Messagebox.show(
+                    "Unable to load cheques:\n"
+                            + e.getMessage()
+            );
         }
     }
 
-    private void populateChequeGrid() {
-        if (chequeRows == null) {
-            System.out.println("chequeRows is NULL");
+    // =========================================================
+    // UPDATE COUNTS
+    // =========================================================
+
+    private void updateCounts() {
+
+        int total = cheques.size();
+
+        int errors = 0;
+
+        for (Cheque cheque : cheques) {
+
+            if (cheque == null) {
+                continue;
+            }
+
+            String chequeStatus =
+                    cheque.getStatus();
+
+            if (isErrorStatus(chequeStatus)) {
+
+                errors++;
+            }
+        }
+
+        if (chequeCount != null) {
+
+            chequeCount.setValue(
+                    "Total Cheques: " + total
+            );
+        }
+
+        if (errorCount != null) {
+
+            errorCount.setValue(
+                    "Error Cheques: " + errors
+            );
+        }
+    }
+
+    // =========================================================
+    // DISPLAY CHEQUE LIST
+    // =========================================================
+
+    private void displayChequeList() {
+
+        ListModelList<Cheque> model =
+                new ListModelList<>(cheques);
+
+        chequeList.setModel(model);
+
+        chequeList.setItemRenderer(
+                new ListitemRenderer<Cheque>() {
+
+                    @Override
+                    public void render(
+                            Listitem item,
+                            Cheque cheque,
+                            int index) {
+
+                        // =====================================
+                        // CHEQUE NUMBER
+                        // =====================================
+
+                        Listcell chequeNumberCell =
+                                new Listcell();
+
+                        chequeNumberCell.setLabel(
+                                cheque.getChequeNumber() != null
+                                        ? cheque.getChequeNumber()
+                                        : "-"
+                        );
+
+                        item.appendChild(
+                                chequeNumberCell
+                        );
+
+                        // =====================================
+                        // BATCH NUMBER
+                        // =====================================
+
+                        Listcell batchCell =
+                                new Listcell();
+
+                        batchCell.setLabel(
+                                cheque.getBatchNumber() != null
+                                        ? cheque.getBatchNumber()
+                                        : "-"
+                        );
+
+                        item.appendChild(
+                                batchCell
+                        );
+
+                        // =====================================
+                        // ACCOUNT NUMBER
+                        // =====================================
+
+                        Listcell accountCell =
+                                new Listcell();
+
+                        accountCell.setLabel(
+                                cheque.getAccountNumber() != null
+                                        ? cheque.getAccountNumber()
+                                        : "-"
+                        );
+
+                        item.appendChild(
+                                accountCell
+                        );
+
+                        // =====================================
+                        // STATUS
+                        // =====================================
+
+                        Listcell statusCell =
+                                new Listcell();
+
+                        String chequeStatus =
+                                cheque.getStatus();
+
+                        if (chequeStatus == null ||
+                                chequeStatus.trim().isEmpty()) {
+
+                            chequeStatus = "PENDING";
+                        }
+
+                        statusCell.setLabel(
+                                chequeStatus
+                        );
+
+                        item.appendChild(
+                                statusCell
+                        );
+
+                        // =====================================
+                        // ACTION
+                        // =====================================
+
+                     // =========================================================
+                     // ACTION
+                     // =========================================================
+
+                     Listcell actionCell = new Listcell();
+
+                     Button actionButton;
+
+                     if (isErrorStatus(chequeStatus)) {
+
+                         actionButton = new Button("Repair");
+
+                         actionButton.setSclass(
+                                 "repair-button"
+                         );
+
+                     } else {
+
+                         actionButton = new Button("Open");
+
+                         actionButton.setSclass(
+                                 "open-button"
+                         );
+                     }
+
+                     // ---------------------------------------------------------
+                     // OPEN / REPAIR CLICK
+                     // ---------------------------------------------------------
+
+                     actionButton.addEventListener(
+                             "onClick",
+                             event -> openCheque(cheque)
+                     );
+
+                     actionCell.appendChild(
+                             actionButton
+                     );
+
+                     item.appendChild(
+                             actionCell
+                     );
+                    }
+                }
+        );
+    }
+
+    // =========================================================
+    // CHECK ERROR STATUS
+    // =========================================================
+
+    private boolean isErrorStatus(
+            String chequeStatus) {
+
+        if (chequeStatus == null) {
+
+            return false;
+        }
+
+        String value =
+                chequeStatus.trim()
+                        .toUpperCase();
+
+        return value.equals("ERROR")
+                || value.equals("DATA_ENTRY_ERROR")
+                || value.equals("REPAIR")
+                || value.equals("REJECTED");
+    }
+
+    // =========================================================
+    // LOAD CHEQUE DETAILS
+    // =========================================================
+
+    private void loadChequeDetails(
+            Cheque cheque) {
+
+        if (cheque == null) {
             return;
         }
 
-        chequeRows.getChildren().clear();
+        currentCheque = cheque;
 
-        for (int i = 0; i < cheques.size(); i++) {
-            Cheque cheque = cheques.get(i);
-            final int index = i;
-            
-            Row row = new Row();
-            row.setStyle("cursor:pointer;");
-
-            // Cheque Number
-            Label chequeNoLabel = new Label(cheque.getChequeNumber());
-            chequeNoLabel.setStyle("font-weight:bold;");
-            row.appendChild(chequeNoLabel);
-
-            // Status
-            Label statusLabel = new Label(cheque.getStatus() != null ? cheque.getStatus() : "-");
-            statusLabel.setStyle(getStatusStyle(cheque.getStatus()));
-            row.appendChild(statusLabel);
-
-            // Repair Button
-            Button repairBtn = new Button("Repair");
-            repairBtn.setStyle("background:#FF9800;color:white;font-weight:bold;");
-            
-            // Add direct event listener
-            repairBtn.addEventListener(Events.ON_CLICK, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    System.out.println("===== REPAIR BUTTON CLICKED =====");
-                    System.out.println("Index: " + index);
-                    System.out.println("Cheque Number: " + cheques.get(index).getChequeNumber());
-                    showCheque(index);
-                }
-            });
-            
-            row.appendChild(repairBtn);
-
-            // Row click event
-            row.addEventListener(Events.ON_CLICK, new org.zkoss.zk.ui.event.EventListener<Event>() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    int rowIndex = chequeRows.getChildren().indexOf(row);
-                    System.out.println("Row clicked at index: " + rowIndex);
-                    showCheque(rowIndex);
-                }
-            });
-
-            chequeRows.appendChild(row);
-        }
-        
-        System.out.println("Populated " + chequeRows.getChildren().size() + " rows");
-    }
-
-    // =========================================================
-    // SHOW CHEQUE
-    // =========================================================
-
-    private void showCheque(int index) {
-        if (cheques == null || index < 0 || index >= cheques.size()) {
-            System.out.println("Invalid index: " + index);
-            return;
-        }
-
-        currentIndex = index;
-        currentCheque = cheques.get(index);
-
-        System.out.println("==========================================");
-        System.out.println("SHOWING CHEQUE: " + currentCheque.getChequeNumber());
-        System.out.println("Status: " + currentCheque.getStatus());
-
-        // Update labels
-        if (chequeCounterLabel != null) {
-            chequeCounterLabel.setValue("Cheque " + (index + 1) + " of " + cheques.size());
-        }
-
-        if (progressLabel != null) {
-            progressLabel.setValue((index + 1) + " / " + cheques.size());
-        }
-
-        // Populate fields
-        populateFields();
-
-        // Load images
-        loadImages();
-
-        // Update error section
-        updateErrorSection();
-
-        // Update buttons
-        updateButtons();
-
-        // Highlight selected row
-        highlightSelectedRow();
-    }
-
-    // =========================================================
-    // POPULATE FIELDS
-    // =========================================================
-
-    private void populateFields() {
-        if (currentCheque == null) return;
+        // =============================================
+        // CHEQUE NUMBER
+        // =============================================
 
         if (chequeNumber != null) {
-            chequeNumber.setValue(valueOrEmpty(currentCheque.getChequeNumber()));
-        }
-        
-        if (accountNumber != null) {
-            accountNumber.setValue(valueOrEmpty(currentCheque.getAccountNumber()));
-        }
-        
-        if (drawerName != null) {
-            drawerName.setValue(valueOrEmpty(currentCheque.getDrawerName()));
-        }
-        
-        if (amount != null) {
-            amount.setValue(currentCheque.getAmount() != null ? currentCheque.getAmount().toString() : "");
-        }
-        
-        if (micrCode != null) {
-            micrCode.setValue(valueOrEmpty(currentCheque.getMicrCode()));
-        }
-        
-        if (ifscCode != null) {
-            ifscCode.setValue(valueOrEmpty(currentCheque.getIfscCode()));
-        }
-        
-        if (status != null) {
-            status.setValue(valueOrEmpty(currentCheque.getStatus()));
+
+            chequeNumber.setValue(
+                    safeValue(
+                            cheque.getChequeNumber()
+                    )
+            );
         }
 
-        if (checkedDate != null) {
-            if (currentCheque.getCheckedDate() != null) {
-                checkedDate.setValue(java.sql.Date.valueOf(currentCheque.getCheckedDate()));
+        // =============================================
+        // ACCOUNT NUMBER
+        // =============================================
+
+        if (accountNumber != null) {
+
+            accountNumber.setValue(
+                    safeValue(
+                            cheque.getAccountNumber()
+                    )
+            );
+        }
+
+        // =============================================
+        // DRAWER NAME
+        // =============================================
+
+        if (drawerName != null) {
+
+            drawerName.setValue(
+                    safeValue(
+                            cheque.getDrawerName()
+                    )
+            );
+        }
+
+        // =============================================
+        // AMOUNT
+        // =============================================
+
+        if (amount != null) {
+
+            BigDecimal chequeAmount =
+                    cheque.getAmount();
+
+            if (chequeAmount != null) {
+
+                amount.setValue(
+                        chequeAmount.toPlainString()
+                );
+
             } else {
+
+                amount.setValue("");
+            }
+        }
+
+        // =============================================
+        // MICR
+        // =============================================
+
+        if (micrCode != null) {
+
+            micrCode.setValue(
+                    safeValue(
+                            cheque.getMicrCode()
+                    )
+            );
+        }
+
+        // =============================================
+        // IFSC
+        // =============================================
+
+        if (ifscCode != null) {
+
+            ifscCode.setValue(
+                    safeValue(
+                            cheque.getIfscCode()
+                    )
+            );
+        }
+
+        // =============================================
+        // STATUS
+        // =============================================
+
+        if (status != null) {
+
+            status.setValue(
+                    safeValue(
+                            cheque.getStatus()
+                    )
+            );
+        }
+
+        // =============================================
+        // CHECKED DATE
+        // =============================================
+
+        if (checkedDate != null) {
+
+            LocalDate date =
+                    cheque.getCheckedDate();
+
+            if (date != null) {
+
+                checkedDate.setValue(
+                        java.sql.Date.valueOf(date)
+                );
+
+            } else {
+
                 checkedDate.setValue(null);
             }
         }
 
-        // Set scanned value
-        if (scannedValueLabel != null) {
-            scannedValueLabel.setValue(valueOrEmpty(currentCheque.getAccountNumber()));
-        }
+        // =============================================
+        // FRONT IMAGE
+        // =============================================
+
+        loadFrontImage(cheque);
+
+        // =============================================
+        // BACK IMAGE
+        // =============================================
+
+        loadBackImage(cheque);
     }
 
     // =========================================================
-    // LOAD IMAGES - FIXED VERSION
+    // FRONT IMAGE
     // =========================================================
 
-    private void loadImages() {
-        if (currentCheque == null) return;
+    private void loadFrontImage(
+            Cheque cheque) {
 
-        String frontPath = currentCheque.getFrontImagePath();
-        String backPath = currentCheque.getBackImagePath();
-
-        System.out.println("Front Image: " + frontPath);
-        System.out.println("Back Image: " + backPath);
-
-        loadImage(frontImage, frontPath);
-        loadImage(backImage, backPath);
-    }
-
-    private void loadImage(Image img, String path) {
-        if (img == null) {
-            System.out.println("Image component is NULL");
+        if (frontImage == null) {
             return;
         }
 
-        // Clear existing image using setSrc which is safer
-        try {
-            img.setSrc(null);
-        } catch (Exception e) {
-            System.out.println("Error clearing image: " + e.getMessage());
-        }
+        String imagePath =
+                cheque.getFrontImagePath();
 
-        if (path == null || path.trim().isEmpty()) {
-            System.out.println("Image path is NULL/EMPTY");
+        if (imagePath != null &&
+                !imagePath.trim().isEmpty()) {
+
+            frontImage.setSrc(
+                    imagePath
+            );
+
+            frontImage.setVisible(true);
+
+        } else {
+
+            frontImage.setSrc("");
+
+            frontImage.setVisible(false);
+        }
+    }
+
+    // =========================================================
+    // BACK IMAGE
+    // =========================================================
+
+    private void loadBackImage(
+            Cheque cheque) {
+
+        if (backImage == null) {
             return;
         }
 
-        try {
-            File file = new File(path.trim());
-            if (file.exists() && file.isFile()) {
-                AImage aimg = new AImage(file);
-                img.setContent(aimg);
-                System.out.println("Image loaded successfully: " + path);
-            } else {
-                System.out.println("Image not found: " + path);
-            }
-        } catch (Exception e) {
-            System.out.println("Error loading image: " + e.getMessage());
-            e.printStackTrace();
+        String imagePath =
+                cheque.getBackImagePath();
+
+        if (imagePath != null &&
+                !imagePath.trim().isEmpty()) {
+
+            backImage.setSrc(
+                    imagePath
+            );
+
+            backImage.setVisible(true);
+
+        } else {
+
+            backImage.setSrc("");
+
+            backImage.setVisible(false);
         }
     }
 
     // =========================================================
-    // UPDATE ERROR SECTION
+    // SAVE
     // =========================================================
 
-    private void updateErrorSection() {
-        if (currentCheque == null) return;
-
-        String statusText = currentCheque.getStatus();
-        
-        if (errorMessage != null) {
-            if (statusText != null && (statusText.contains("Error") || statusText.contains("ERROR"))) {
-                errorMessage.setValue("⚠️ The following fields have Data Entry errors. Please correct and save.");
-            } else {
-                errorMessage.setValue("✅ No errors found.");
-            }
-        }
-        
-        if (errorFieldLabel != null) {
-            if (statusText != null && (statusText.contains("Error") || statusText.contains("ERROR"))) {
-                errorFieldLabel.setValue(statusText);
-                errorFieldLabel.setStyle("color:#d32f2f;font-weight:bold;");
-            } else {
-                errorFieldLabel.setValue("All fields are correct.");
-                errorFieldLabel.setStyle("color:#4CAF50;font-weight:bold;");
-            }
-        }
-    }
-
-    // =========================================================
-    // UPDATE BUTTONS
-    // =========================================================
-
-    private void updateButtons() {
-        if (cheques == null || cheques.isEmpty()) {
-            if (firstButton != null) firstButton.setDisabled(true);
-            if (prevButton != null) prevButton.setDisabled(true);
-            if (nextButton != null) nextButton.setDisabled(true);
-            if (lastButton != null) lastButton.setDisabled(true);
-            return;
-        }
-
-        if (firstButton != null) firstButton.setDisabled(currentIndex == 0);
-        if (prevButton != null) prevButton.setDisabled(currentIndex == 0);
-        if (nextButton != null) nextButton.setDisabled(currentIndex >= cheques.size() - 1);
-        if (lastButton != null) lastButton.setDisabled(currentIndex >= cheques.size() - 1);
-    }
-
-    // =========================================================
-    // HIGHLIGHT SELECTED ROW
-    // =========================================================
-
-    private void highlightSelectedRow() {
-        if (chequeRows == null || currentCheque == null) return;
-
-        for (Object child : chequeRows.getChildren()) {
-            if (child instanceof Row) {
-                Row row = (Row) child;
-                row.setStyle("cursor:pointer;");
-                if (row.getChildren().size() > 0) {
-                    Label label = (Label) row.getChildren().get(0);
-                    if (label.getValue().equals(currentCheque.getChequeNumber())) {
-                        row.setStyle("background:#FFF3E0;cursor:pointer;font-weight:bold;");
-                    }
-                }
-            }
-        }
-    }
-
-    // =========================================================
-    // UPDATE GRID ROW STATUS
-    // =========================================================
-
-    private void updateGridRowStatus() {
-        if (chequeRows == null || currentCheque == null) return;
-
-        for (Object child : chequeRows.getChildren()) {
-            if (child instanceof Row) {
-                Row row = (Row) child;
-                if (row.getChildren().size() > 0) {
-                    Label chequeLabel = (Label) row.getChildren().get(0);
-                    if (chequeLabel.getValue().equals(currentCheque.getChequeNumber())) {
-                        if (row.getChildren().size() > 1) {
-                            Label statusLabel = (Label) row.getChildren().get(1);
-                            statusLabel.setValue(currentCheque.getStatus());
-                            statusLabel.setStyle(getStatusStyle(currentCheque.getStatus()));
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    // =========================================================
-    // @Listen EVENTS
-    // =========================================================
-
-    @Listen("onClick = #firstButton")
-    public void goFirst() {
-        System.out.println("First button clicked");
-        if (cheques != null && !cheques.isEmpty()) {
-            showCheque(0);
-        }
-    }
-
-    @Listen("onClick = #prevButton")
-    public void goPrev() {
-        System.out.println("Prev button clicked");
-        if (currentIndex > 0) {
-            showCheque(currentIndex - 1);
-        }
-    }
-
-    @Listen("onClick = #nextButton")
-    public void goNext() {
-        System.out.println("Next button clicked");
-        if (currentIndex < cheques.size() - 1) {
-            showCheque(currentIndex + 1);
-        }
-    }
-
-    @Listen("onClick = #lastButton")
-    public void goLast() {
-        System.out.println("Last button clicked");
-        if (cheques != null && !cheques.isEmpty()) {
-            showCheque(cheques.size() - 1);
-        }
-    }
-
-    @Listen("onClick = #saveButton")
+    @Listen("onClick=#saveButton")
     public void saveCheque() {
-        System.out.println("Save button clicked");
+
         if (currentCheque == null) {
-            Messagebox.show("No cheque is currently loaded.");
+
+            Messagebox.show(
+                    "Please select a cheque."
+            );
+
             return;
         }
 
         try {
-            // Get values from UI
-            if (accountNumber != null && accountNumber.getValue() != null) {
-                currentCheque.setAccountNumber(accountNumber.getValue().trim());
-            }
 
-            if (drawerName != null && drawerName.getValue() != null) {
-                currentCheque.setDrawerName(drawerName.getValue().trim());
-            }
+            updateCurrentChequeFromUI();
 
-            if (micrCode != null && micrCode.getValue() != null) {
-                currentCheque.setMicrCode(micrCode.getValue().trim());
-            }
+            chequeService.updateCheque(
+                    currentCheque
+            );
 
-            if (ifscCode != null && ifscCode.getValue() != null) {
-                currentCheque.setIfscCode(ifscCode.getValue().trim());
-            }
+            Messagebox.show(
+                    "Cheque saved successfully."
+            );
 
-            if (amount != null && amount.getValue() != null && !amount.getValue().trim().isEmpty()) {
-                try {
-                    currentCheque.setAmount(new BigDecimal(amount.getValue().trim()));
-                } catch (NumberFormatException e) {
-                    Messagebox.show("Invalid amount format. Please enter a valid number.", "Error", Messagebox.OK, Messagebox.ERROR);
-                    return;
-                }
-            }
-
-            if (checkedDate != null && checkedDate.getValue() != null) {
-                currentCheque.setCheckedDate(checkedDate.getValue().toInstant()
-                        .atZone(ZoneId.systemDefault()).toLocalDate());
-            }
-
-            // Update status if corrections were made
-            String originalStatus = currentCheque.getStatus();
-            if (originalStatus != null && (originalStatus.contains("Error") || originalStatus.contains("ERROR"))) {
-                currentCheque.setStatus("CORRECTED");
-            }
-
-            // Update in database
-            chequeService.updateCheque(currentCheque);
-
-            // Update UI
-            updateGridRowStatus();
-            updateErrorSection();
-
-            Messagebox.show("✅ Cheque saved successfully.", "Success", Messagebox.OK, Messagebox.INFORMATION);
+            // Refresh list
+            loadCheques();
 
         } catch (Exception e) {
+
             e.printStackTrace();
-            Messagebox.show("Unable to save cheque: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+
+            Messagebox.show(
+                    "Unable to save cheque:\n"
+                            + e.getMessage()
+            );
         }
     }
 
-    @Listen("onClick = #saveNextButton")
+    // =========================================================
+    // SAVE AND NEXT
+    // =========================================================
+
+    @Listen("onClick=#saveNextButton")
     public void saveAndNext() {
-        System.out.println("Save & Next button clicked");
-        saveCheque();
-        goNext();
-    }
 
-    @Listen("onClick = #rejectButton")
-    public void rejectCheque() {
-        System.out.println("Reject button clicked");
-        if (currentCheque == null) return;
+        if (currentCheque == null) {
+
+            Messagebox.show(
+                    "Please select a cheque."
+            );
+
+            return;
+        }
 
         try {
-            int response = Messagebox.show("Are you sure you want to reject this cheque?", 
-                                           "Confirm Reject", 
-                                           Messagebox.YES | Messagebox.NO,
-                                           Messagebox.QUESTION);
 
-            if (response == Messagebox.YES) {
-                currentCheque.setStatus("REJECTED");
-                chequeService.updateCheque(currentCheque);
-                updateGridRowStatus();
-                updateErrorSection();
-                Messagebox.show("Cheque rejected.", "Success", Messagebox.OK, Messagebox.INFORMATION);
-                goNext();
+            updateCurrentChequeFromUI();
+
+            chequeService.updateCheque(
+                    currentCheque
+            );
+
+            /*
+             * Move to next cheque.
+             */
+            if (currentIndex <
+                    cheques.size() - 1) {
+
+                currentIndex++;
+
+                Cheque nextCheque =
+                        cheques.get(
+                                currentIndex
+                        );
+
+                loadChequeDetails(
+                        nextCheque
+                );
+
+                chequeList.setSelectedIndex(
+                        currentIndex
+                );
+
+            } else {
+
+                Messagebox.show(
+                        "This is the last cheque in the batch."
+                );
             }
 
         } catch (Exception e) {
+
             e.printStackTrace();
-            Messagebox.show("Unable to reject cheque: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+
+            Messagebox.show(
+                    "Unable to save cheque:\n"
+                            + e.getMessage()
+            );
         }
     }
 
-    @Listen("onClick = #backToListButton")
-    public void backToList() {
-        System.out.println("Back to List button clicked");
+    // =========================================================
+    // UPDATE OBJECT FROM UI
+    // =========================================================
+
+    private void updateCurrentChequeFromUI()
+            throws Exception {
+
+        if (currentCheque == null) {
+            return;
+        }
+
+        // Account
+        if (accountNumber != null) {
+
+            currentCheque.setAccountNumber(
+                    accountNumber.getValue()
+            );
+        }
+
+        // Drawer
+        if (drawerName != null) {
+
+            currentCheque.setDrawerName(
+                    drawerName.getValue()
+            );
+        }
+
+        // Amount
+        if (amount != null) {
+
+            String amountValue =
+                    amount.getValue();
+
+            if (amountValue != null &&
+                    !amountValue.trim().isEmpty()) {
+
+                currentCheque.setAmount(
+                        new BigDecimal(
+                                amountValue.trim()
+                        )
+                );
+
+            } else {
+
+                currentCheque.setAmount(null);
+            }
+        }
+
+        // MICR
+        if (micrCode != null) {
+
+            currentCheque.setMicrCode(
+                    micrCode.getValue()
+            );
+        }
+
+        // IFSC
+        if (ifscCode != null) {
+
+            currentCheque.setIfscCode(
+                    ifscCode.getValue()
+            );
+        }
+
+        // Status
+        if (status != null) {
+
+            currentCheque.setStatus(
+                    status.getValue()
+            );
+        }
+
+        // Checked date
+        if (checkedDate != null) {
+
+            if (checkedDate.getValue() != null) {
+
+                java.util.Date date =
+                        checkedDate.getValue();
+
+                currentCheque.setCheckedDate(
+                        new java.sql.Date(
+                                date.getTime()
+                        )
+                        .toLocalDate()
+                );
+
+            } else {
+
+                currentCheque.setCheckedDate(
+                        null
+                );
+            }
+        }
+    }
+
+    // =========================================================
+    // FIRST
+    // =========================================================
+
+    @Listen("onClick=#firstButton")
+    public void firstCheque() {
+
+        if (cheques.isEmpty()) {
+            return;
+        }
+
+        currentIndex = 0;
+
+        loadChequeDetails(
+                cheques.get(0)
+        );
+
+        chequeList.setSelectedIndex(0);
+    }
+
+    // =========================================================
+    // PREVIOUS
+    // =========================================================
+
+    @Listen("onClick=#prevButton")
+    public void previousCheque() {
+
+        if (cheques.isEmpty()) {
+            return;
+        }
+
+        if (currentIndex > 0) {
+
+            currentIndex--;
+
+            loadChequeDetails(
+                    cheques.get(currentIndex)
+            );
+
+            chequeList.setSelectedIndex(
+                    currentIndex
+            );
+        }
+    }
+
+    // =========================================================
+    // NEXT
+    // =========================================================
+
+    @Listen("onClick=#nextButton")
+    public void nextCheque() {
+
+        if (cheques.isEmpty()) {
+            return;
+        }
+
+        if (currentIndex <
+                cheques.size() - 1) {
+
+            currentIndex++;
+
+            loadChequeDetails(
+                    cheques.get(currentIndex)
+            );
+
+            chequeList.setSelectedIndex(
+                    currentIndex
+            );
+        }
+    }
+
+    // =========================================================
+    // LAST
+    // =========================================================
+
+    @Listen("onClick=#lastButton")
+    public void lastCheque() {
+
+        if (cheques.isEmpty()) {
+            return;
+        }
+
+        currentIndex =
+                cheques.size() - 1;
+
+        loadChequeDetails(
+                cheques.get(currentIndex)
+        );
+
+        chequeList.setSelectedIndex(
+                currentIndex
+        );
+    }
+
+    // =========================================================
+    // REJECT
+    // =========================================================
+
+    @Listen("onClick=#rejectButton")
+    public void rejectCheque() {
+
+        if (currentCheque == null) {
+
+            Messagebox.show(
+                    "Please select a cheque."
+            );
+
+            return;
+        }
+
+        currentCheque.setStatus(
+                "REJECTED"
+        );
+
         try {
-            Executions.sendRedirect("MakerDashboard.zul");
+
+            chequeService.updateCheque(
+                    currentCheque
+            );
+
+            Messagebox.show(
+                    "Cheque rejected."
+            );
+
+            loadCheques();
+
         } catch (Exception e) {
+
             e.printStackTrace();
-            Messagebox.show("Unable to return to dashboard: " + e.getMessage(), "Error", Messagebox.OK, Messagebox.ERROR);
+
+            Messagebox.show(
+                    "Unable to reject cheque:\n"
+                            + e.getMessage()
+            );
         }
     }
 
     // =========================================================
-    // HELPER METHODS
+    // BACK TO LIST
     // =========================================================
 
-    private String getStatusStyle(String status) {
-        if (status == null) return "";
-        if (status.contains("Error") || status.contains("ERROR")) {
-            return "color:red;font-weight:bold;";
-        } else if ("CORRECTED".equals(status)) {
-            return "color:green;font-weight:bold;";
-        } else if ("REJECTED".equals(status)) {
-            return "color:red;font-weight:bold;";
-        }
-        return "color:#333;";
-    }
+    @Listen("onClick=#backToListButton")
+    public void backToList() {
 
-    private String valueOrEmpty(String value) {
-        return value == null ? "" : value;
+        Executions.sendRedirect(
+                "MakerDashboard.zul"
+        );
     }
+    private String safeValue(
+            String value) {
+
+        if (value == null) {
+
+            return "";
+        }
+
+        return value;
+    }
+    
 }

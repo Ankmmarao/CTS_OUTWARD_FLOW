@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?page title="Cheque Data Entry &amp; Repair"
+         contentType="text/html;charset=UTF-8"?>
+
+<?style src="/css/dataEntryRepair.css"?>
+
+<zk>
+
+    <window
+        id="dataEntryRepairWindow"
+        border="none"
+        width="100%"
+        height="100%"
+        apply="com.cts.outward.controller.maker.DataEntryRepairController">
+
+        <vlayout
+            width="100%"
+            height="100%"
+            spacing="0"
+            sclass="page">
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <hlayout
+                width="100%"
+                valign="middle"
+                sclass="header-line">
+
+                <vlayout
+                    hflex="1"
+                    spacing="2px">
+
+                    <label
+                        value="Data Entry &amp; Repair"
+                        sclass="page-title"/>
+
+                    <label
+                        value="Outward – Verify and repair cheque details"
+                        sclass="page-subtitle"/>
+
+                </vlayout>
+
+                <label
+                    id="batchIdLabel"
+                    value="Batch: BATCH1788257173591"
+                    sclass="batch-badge"/>
+
+                <label
+                    id="chequeCounterLabel"
+                    value="Cheque 1 of 1"
+                    sclass="counter"/>
+
+            </hlayout>
+
+
+            <!-- ================================================= -->
+            <!-- MAIN CONTENT -->
+            <!-- ================================================= -->
+
+            <hlayout
+                width="100%"
+                spacing="18px"
+                sclass="main-content">
+
+
+                <!-- ================================================= -->
+                <!-- LEFT : CHEQUE IMAGES -->
+                <!-- ================================================= -->
+
+                <vlayout
+                    width="50%"
+                    sclass="left-panel"
+                    spacing="0">
+
+                    <!-- TOP NAVIGATION -->
+
+                    <hlayout
+                        width="100%"
+                        valign="middle"
+                        spacing="12px"
+                        sclass="image-navigation">
+
+                        <button
+                            id="prevButtonTop"
+                            label="‹ Prev"
+                            width="72px"
+                            sclass="nav-button"/>
+
+                        <label
+                            value="Record 1 of 1"
+                            sclass="record-label"/>
+
+                        <button
+                            id="nextButtonTop"
+                            label="Next ›"
+                            width="72px"
+                            sclass="nav-button"/>
+
+                    </hlayout>
+
+
+                    <!-- FRONT IMAGE TITLE -->
+
+                    <label
+                        value="Cheque Front Image"
+                        sclass="image-title"/>
+
+
+                    <!-- FRONT CHEQUE -->
+
+                    <div
+                        sclass="cheque-frame">
+
+                        <image
+                            id="frontImage"
+                            src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Subcheck_FRONT.png"
+                            sclass="cheque-image"/>
+
+                    </div>
+
+
+                    <!-- BACK IMAGE TITLE -->
+
+                    <label
+                        value="Cheque Back Image"
+                        sclass="image-title back-title"/>
+
+
+                    <!-- BACK CHEQUE -->
+
+                    <div
+                        sclass="back-frame">
+
+                        <image
+                            id="backImage"
+                            src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Subcheck_BACK.png"
+                            sclass="back-image"/>
+
+                    </div>
+
+
+                    <!-- OCR -->
+
+                    <div
+                        sclass="ocr-box">
+
+                        <label
+                            value="OCR Read (MICR Line)"
+                            sclass="ocr-title"/>
+
+                        <label
+                            id="micrOcrLabel"
+                            value="⑆100011⑆   600287001⑆   29"
+                            sclass="micr-text"/>
+
+                    </div>
+
+                </vlayout>
+
+
+                <!-- ================================================= -->
+                <!-- RIGHT : CHEQUE DETAILS -->
+                <!-- ================================================= -->
+
+                <vlayout
+                    width="50%"
+                    sclass="right-panel"
+                    spacing="0">
+
+
+                    <!-- RIGHT HEADER -->
+
+                    <hlayout
+                        width="100%"
+                        valign="middle"
+                        sclass="details-header">
+
+                        <label
+                            value="Cheque Details"
+                            hflex="1"
+                            sclass="details-title"/>
+
+                        <label
+                            value="REPAIR"
+                            sclass="repair-badge"/>
+
+                    </hlayout>
+
+
+                    <!-- DETAILS FORM -->
+
+                    <grid
+                        width="100%"
+                        sclass="details-grid">
+
+                        <columns>
+
+                            <column width="38%"/>
+
+                            <column width="62%"/>
+
+                        </columns>
+
+                        <rows>
+
+
+                            <!-- CHEQUE NUMBER -->
+
+                            <row>
+
+                                <label
+                                    value="Cheque No:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="chequeNumber"
+                                    value="000123"
+                                    width="100%"
+                                    readonly="true"
+                                    sclass="field readonly-field"/>
+
+                            </row>
+
+
+                            <!-- ACCOUNT NUMBER -->
+
+                            <row>
+
+                                <label
+                                    value="Account No:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="accountNumber"
+                                    value="50100234567890"
+                                    width="100%"
+                                    sclass="field"/>
+
+                            </row>
+
+
+                            <!-- DRAWER NAME -->
+
+                            <row>
+
+                                <label
+                                    value="Drawer Name:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="drawerName"
+                                    value="RAMESH KUMAR"
+                                    width="100%"
+                                    sclass="field"/>
+
+                            </row>
+
+
+                            <!-- AMOUNT -->
+
+                            <row>
+
+                                <label
+                                    value="Amount:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="amount"
+                                    value="25,000.00"
+                                    width="100%"
+                                    sclass="field"/>
+
+                            </row>
+
+
+                            <!-- MICR -->
+
+                            <row>
+
+                                <label
+                                    value="MICR Code:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="micrCode"
+                                    value="600240002"
+                                    width="100%"
+                                    sclass="field"/>
+
+                            </row>
+
+
+                            <!-- IFSC -->
+
+                            <row
+                                sclass="highlight-row">
+
+                                <label
+                                    value="IFSC Code:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="ifscCode"
+                                    value="HDFC0001234"
+                                    width="100%"
+                                    sclass="field"/>
+
+                            </row>
+
+
+                            <!-- STATUS -->
+
+                            <row>
+
+                                <label
+                                    value="Status:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="status"
+                                    value="REPAIR"
+                                    width="100%"
+                                    readonly="true"
+                                    sclass="field readonly-field"/>
+
+                            </row>
+
+
+                            <!-- CHECKED DATE -->
+
+                            <row>
+
+                                <label
+                                    value="Checked Date:"
+                                    sclass="field-label"/>
+
+                                <datebox
+                                    id="checkedDate"
+                                    width="100%"
+                                    format="dd/MM/yyyy"/>
+
+                            </row>
+
+
+                            <!-- REMARKS -->
+
+                            <row>
+
+                                <label
+                                    value="Remarks:"
+                                    sclass="field-label"/>
+
+                                <textbox
+                                    id="remarks"
+                                    width="100%"
+                                    multiline="true"
+                                    rows="3"
+                                    placeholder="Optional remarks"
+                                    sclass="field remarks"/>
+
+                            </row>
+
+                        </rows>
+
+                    </grid>
+
+
+                    <!-- ================================================= -->
+                    <!-- PROGRESS -->
+                    <!-- ================================================= -->
+
+                    <hlayout
+                        width="100%"
+                        valign="middle"
+                        sclass="progress-header">
+
+                        <label
+                            value="Progress"
+                            hflex="1"
+                            sclass="progress-title"/>
+
+                        <label
+                            id="progressLabel"
+                            value="1 / 1"
+                            sclass="progress-value"/>
+
+                    </hlayout>
+
+
+                    <progressmeter
+                        id="progressMeter"
+                        value="100"
+                        width="100%"
+                        sclass="progress-meter"/>
+
+
+                </vlayout>
+
+            </hlayout>
+
+
+            <!-- ================================================= -->
+            <!-- BOTTOM ACTION BAR -->
+            <!-- ================================================= -->
+
+            <hlayout
+                width="100%"
+                valign="middle"
+                sclass="bottom-bar">
+
+
+                <!-- LEFT NAVIGATION -->
+
+                <hlayout
+                    spacing="10px"
+                    valign="middle">
+
+                    <button
+                        id="firstButton"
+                        label="|‹ First"
+                        width="85px"
+                        sclass="secondary-button"/>
+
+                    <button
+                        id="prevButton"
+                        label="‹ Previous"
+                        width="115px"
+                        sclass="nav-button"/>
+
+                    <label
+                        id="bottomProgressLabel"
+                        value="1 / 1"
+                        sclass="bottom-progress"/>
+
+                    <button
+                        id="nextButton"
+                        label="Next ›"
+                        width="95px"
+                        sclass="nav-button"/>
+
+                    <button
+                        id="lastButton"
+                        label="Last ›|"
+                        width="90px"
+                        sclass="secondary-button"/>
+
+                    <label
+                        value="|"
+                        sclass="separator"/>
+
+                    <button
+                        id="backToListButton"
+                        label="Back to List"
+                        width="125px"
+                        sclass="back-list-button"/>
+
+                </hlayout>
+
+
+                <!-- RIGHT ACTION BUTTONS -->
+
+                <hlayout
+                    hflex="1"
+                    spacing="12px">
+
+                    <button
+                        id="rejectButton"
+                        label="Reject"
+                        width="100px"
+                        sclass="reject-button"/>
+
+                    <button
+                        id="saveButton"
+                        label="Save"
+                        width="100px"
+                        sclass="save-button"/>
+
+                    <button
+                        id="saveNextButton"
+                        label="Save &amp; Next"
+                        width="145px"
+                        sclass="save-next-button"/>
+
+                </hlayout>
+
+            </hlayout>
+
+        </vlayout>
+
+    </window>
+
+</zk>
