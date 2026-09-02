@@ -1,4 +1,3 @@
-
 package com.cts.outward.repository;
 
 import com.cts.outward.config.DatabaseConnection;
@@ -14,9 +13,9 @@ import java.util.List;
 
 public class BatchRepository {
 
-    // ==========================================
+    // =========================================================
     // SAVE BATCH
-    // ==========================================
+    // =========================================================
 
     public void save(Batch batch) throws SQLException {
 
@@ -35,37 +34,25 @@ public class BatchRepository {
                         connection.prepareStatement(sql)
         ) {
 
-            // ==========================================
             // 1. BATCH NUMBER
-            // ==========================================
-
             statement.setString(
                     1,
                     batch.getBatchNumber()
             );
 
-            // ==========================================
             // 2. BRANCH CODE
-            // ==========================================
-
             statement.setString(
                     2,
                     batch.getBranchCode()
             );
 
-            // ==========================================
             // 3. BRANCH NAME
-            // ==========================================
-
             statement.setString(
                     3,
                     batch.getBranchName()
             );
 
-            // ==========================================
             // 4. CREATED BY
-            // ==========================================
-
             if (batch.getCreatedBy() != null) {
 
                 statement.setInt(
@@ -81,10 +68,7 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
             // 5. SCHEDULE DATE
-            // ==========================================
-
             if (batch.getScheduleDate() != null) {
 
                 statement.setDate(
@@ -102,10 +86,7 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
             // 6. SUBMITTED DATE
-            // ==========================================
-
             if (batch.getSubmittedDate() != null) {
 
                 statement.setTimestamp(
@@ -123,10 +104,7 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
             // 7. COMPLETED DATE
-            // ==========================================
-
             if (batch.getCompletedDate() != null) {
 
                 statement.setTimestamp(
@@ -144,10 +122,7 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
             // 8. TOTAL CHEQUES
-            // ==========================================
-
             if (batch.getTotalCheques() != null) {
 
                 statement.setInt(
@@ -163,31 +138,28 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
             // 9. BATCH STATUS
-            // Database column = batch_status
-            // ==========================================
-
             statement.setString(
                     9,
                     batch.getBatchStatus()
             );
-
-            // ==========================================
-            // EXECUTE INSERT
-            // ==========================================
 
             statement.executeUpdate();
         }
     }
 
 
-    // ==========================================
-    // FIND SUBMITTED BATCHES
-    // Capture Operator
-    // ==========================================
+    // =========================================================
+    // FIND BATCHES READY FOR MAKER
+    //
+    // Capture Operator creates:
+    //
+    // READY_FOR_ASSIGNMENT
+    //
+    // These batches are available for Maker.
+    // =========================================================
 
-    public List<Batch> findSubmittedBatches()
+    public List<Batch> findReadyForAssignmentBatches()
             throws SQLException {
 
         List<Batch> batches =
@@ -205,7 +177,7 @@ public class BatchRepository {
                 "batch_status " +
                 "FROM batch " +
                 "WHERE batch_status = ? " +
-                "ORDER BY submitted_date DESC";
+                "ORDER BY submitted_date DESC NULLS LAST";
 
         try (
                 Connection connection =
@@ -215,13 +187,9 @@ public class BatchRepository {
                         connection.prepareStatement(sql)
         ) {
 
-            // ==========================================
-            // ONLY SUBMITTED BATCHES
-            // ==========================================
-
             statement.setString(
                     1,
-                    "SUBMITTED"
+                    "READY_FOR_ASSIGNMENT"
             );
 
             try (
@@ -248,18 +216,39 @@ public class BatchRepository {
     }
 
 
-    // ==========================================
+    // =========================================================
+    // OLD METHOD
+    //
+    // Kept for compatibility with existing Capture Operator
+    // controller/service code.
+    //
+    // It now returns READY_FOR_ASSIGNMENT batches.
+    // =========================================================
+
+    public List<Batch> findSubmittedBatches()
+            throws SQLException {
+
+        return findReadyForAssignmentBatches();
+    }
+
+
+    // =========================================================
     // FIND MAKER BATCHES
     //
-    // Maker Dashboard displays:
+    // Maker sees:
     //
-    // 1. All SUBMITTED batches
-    // 2. LOCKED batches assigned to this maker
-    // 3. IN_PROGRESS batches of this maker
+    // 1. READY_FOR_ASSIGNMENT
+    //      -> Available
     //
-    // It does NOT display another maker's
-    // LOCKED / IN_PROGRESS batches.
-    // ==========================================
+    // 2. LOCKED belonging to current maker
+    //      -> Assigned
+    //
+    // 3. IN_PROGRESS belonging to current maker
+    //      -> In Progress
+    //
+    // Another maker's LOCKED/IN_PROGRESS batches
+    // are NOT displayed.
+    // =========================================================
 
     public List<Batch> findMakerBatches(
             Integer makerId
@@ -292,18 +281,18 @@ public class BatchRepository {
                         connection.prepareStatement(sql)
         ) {
 
-            // ==========================================
+            // =================================================
             // 1. AVAILABLE BATCHES
-            // ==========================================
+            // =================================================
 
             statement.setString(
                     1,
-                    "SUBMITTED"
+                    "READY_FOR_ASSIGNMENT"
             );
 
-            // ==========================================
-            // 2. CURRENT MAKER ID
-            // ==========================================
+            // =================================================
+            // 2. CURRENT MAKER
+            // =================================================
 
             if (makerId != null) {
 
@@ -320,27 +309,23 @@ public class BatchRepository {
                 );
             }
 
-            // ==========================================
+            // =================================================
             // 3. LOCKED
-            // ==========================================
+            // =================================================
 
             statement.setString(
                     3,
                     "LOCKED"
             );
 
-            // ==========================================
+            // =================================================
             // 4. IN PROGRESS
-            // ==========================================
+            // =================================================
 
             statement.setString(
                     4,
                     "IN_PROGRESS"
             );
-
-            // ==========================================
-            // EXECUTE QUERY
-            // ==========================================
 
             try (
                     ResultSet resultSet =
@@ -366,25 +351,41 @@ public class BatchRepository {
     }
 
 
-    // ==========================================
+    // =========================================================
     // ASSIGN BATCH TO MAKER
     //
-    // Maker clicks:
+    // Before:
     //
-    // ASSIGN TO ME
+    // READY_FOR_ASSIGNMENT
     //
-    // Database changes:
+    // After:
     //
-    // created_by  = makerId
+    // created_by = makerId
     // batch_status = LOCKED
     //
-    // Only SUBMITTED batches can be assigned.
-    // ==========================================
+    // The WHERE condition prevents two makers from
+    // assigning the same batch.
+    // =========================================================
 
     public void assignBatchToMaker(
             String batchNumber,
             Integer makerId
     ) throws SQLException {
+
+        if (batchNumber == null ||
+                batchNumber.trim().isEmpty()) {
+
+            throw new SQLException(
+                    "Batch number is required."
+            );
+        }
+
+        if (makerId == null) {
+
+            throw new SQLException(
+                    "Maker ID is required."
+            );
+        }
 
         String sql =
                 "UPDATE batch " +
@@ -401,62 +402,52 @@ public class BatchRepository {
                         connection.prepareStatement(sql)
         ) {
 
-            // ==========================================
+            // =================================================
             // 1. MAKER ID
-            // ==========================================
+            // =================================================
 
-            if (makerId != null) {
+            statement.setInt(
+                    1,
+                    makerId
+            );
 
-                statement.setInt(
-                        1,
-                        makerId
-                );
-
-            } else {
-
-                statement.setNull(
-                        1,
-                        java.sql.Types.INTEGER
-                );
-            }
-
-            // ==========================================
+            // =================================================
             // 2. NEW STATUS
-            // ==========================================
+            // =================================================
 
             statement.setString(
                     2,
                     "LOCKED"
             );
 
-            // ==========================================
+            // =================================================
             // 3. BATCH NUMBER
-            // ==========================================
+            // =================================================
 
             statement.setString(
                     3,
                     batchNumber
             );
 
-            // ==========================================
-            // 4. OLD STATUS
-            // ==========================================
+            // =================================================
+            // 4. CURRENT STATUS
+            // =================================================
 
             statement.setString(
                     4,
-                    "SUBMITTED"
+                    "READY_FOR_ASSIGNMENT"
             );
 
-            // ==========================================
-            // EXECUTE UPDATE
-            // ==========================================
+            // =================================================
+            // EXECUTE
+            // =================================================
 
             int updatedRows =
                     statement.executeUpdate();
 
-            // ==========================================
-            // CHECK RESULT
-            // ==========================================
+            // =================================================
+            // NO ROW UPDATED
+            // =================================================
 
             if (updatedRows == 0) {
 
@@ -470,11 +461,90 @@ public class BatchRepository {
     }
 
 
-    // ==========================================
-    // FIND SINGLE BATCH
+    // =========================================================
+    // MOVE LOCKED BATCH TO IN_PROGRESS
     //
-    // Used when Maker clicks OPEN
-    // ==========================================
+    // Call this when Maker actually opens/starts processing
+    // the batch.
+    // =========================================================
+
+    public void markBatchInProgress(
+            String batchNumber,
+            Integer makerId
+    ) throws SQLException {
+
+        if (batchNumber == null ||
+                batchNumber.trim().isEmpty()) {
+
+            throw new SQLException(
+                    "Batch number is required."
+            );
+        }
+
+        if (makerId == null) {
+
+            throw new SQLException(
+                    "Maker ID is required."
+            );
+        }
+
+        String sql =
+                "UPDATE batch " +
+                "SET batch_status = ? " +
+                "WHERE batch_number = ? " +
+                "AND created_by = ? " +
+                "AND batch_status = ?";
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            // NEW STATUS
+            statement.setString(
+                    1,
+                    "IN_PROGRESS"
+            );
+
+            // BATCH NUMBER
+            statement.setString(
+                    2,
+                    batchNumber
+            );
+
+            // MAKER
+            statement.setInt(
+                    3,
+                    makerId
+            );
+
+            // OLD STATUS
+            statement.setString(
+                    4,
+                    "LOCKED"
+            );
+
+            int updatedRows =
+                    statement.executeUpdate();
+
+            if (updatedRows == 0) {
+
+                throw new SQLException(
+                        "Batch is not assigned to this maker " +
+                        "or is not locked: "
+                                + batchNumber
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // FIND SINGLE BATCH
+    // =========================================================
 
     public Batch findByBatchNumber(
             String batchNumber
@@ -530,18 +600,98 @@ public class BatchRepository {
     }
 
 
-    // ==========================================
+    // =========================================================
+    // COMPLETE BATCH
+    //
+    // When all cheque processing is completed:
+    //
+    // IN_PROGRESS
+    //       ↓
+    // COMPLETED
+    // =========================================================
+
+    public void completeBatch(
+            String batchNumber,
+            Integer makerId
+    ) throws SQLException {
+
+        if (batchNumber == null ||
+                batchNumber.trim().isEmpty()) {
+
+            throw new SQLException(
+                    "Batch number is required."
+            );
+        }
+
+        if (makerId == null) {
+
+            throw new SQLException(
+                    "Maker ID is required."
+            );
+        }
+
+        String sql =
+                "UPDATE batch " +
+                "SET batch_status = ?, " +
+                "completed_date = CURRENT_TIMESTAMP " +
+                "WHERE batch_number = ? " +
+                "AND created_by = ? " +
+                "AND batch_status = ?";
+
+        try (
+                Connection connection =
+                        DatabaseConnection.getConnection();
+
+                PreparedStatement statement =
+                        connection.prepareStatement(sql)
+        ) {
+
+            statement.setString(
+                    1,
+                    "COMPLETED"
+            );
+
+            statement.setString(
+                    2,
+                    batchNumber
+            );
+
+            statement.setInt(
+                    3,
+                    makerId
+            );
+
+            statement.setString(
+                    4,
+                    "IN_PROGRESS"
+            );
+
+            int updatedRows =
+                    statement.executeUpdate();
+
+            if (updatedRows == 0) {
+
+                throw new SQLException(
+                        "Unable to complete batch: "
+                                + batchNumber
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
     // MAP RESULTSET TO BATCH
-    // ==========================================
+    // =========================================================
 
     private void mapBatch(
             ResultSet resultSet,
             Batch batch
     ) throws SQLException {
 
-        // ==========================================
+        // =====================================================
         // BATCH NUMBER
-        // ==========================================
+        // =====================================================
 
         batch.setBatchNumber(
                 resultSet.getString(
@@ -549,9 +699,9 @@ public class BatchRepository {
                 )
         );
 
-        // ==========================================
+        // =====================================================
         // BRANCH CODE
-        // ==========================================
+        // =====================================================
 
         batch.setBranchCode(
                 resultSet.getString(
@@ -559,9 +709,9 @@ public class BatchRepository {
                 )
         );
 
-        // ==========================================
+        // =====================================================
         // BRANCH NAME
-        // ==========================================
+        // =====================================================
 
         batch.setBranchName(
                 resultSet.getString(
@@ -569,9 +719,9 @@ public class BatchRepository {
                 )
         );
 
-        // ==========================================
-        // CREATED BY
-        // ==========================================
+        // =====================================================
+        // CREATED BY / MAKER ID
+        // =====================================================
 
         int createdBy =
                 resultSet.getInt(
@@ -585,9 +735,9 @@ public class BatchRepository {
             );
         }
 
-        // ==========================================
+        // =====================================================
         // SCHEDULE DATE
-        // ==========================================
+        // =====================================================
 
         java.sql.Date scheduleDate =
                 resultSet.getDate(
@@ -601,9 +751,9 @@ public class BatchRepository {
             );
         }
 
-        // ==========================================
+        // =====================================================
         // SUBMITTED DATE
-        // ==========================================
+        // =====================================================
 
         Timestamp submittedDate =
                 resultSet.getTimestamp(
@@ -617,9 +767,9 @@ public class BatchRepository {
             );
         }
 
-        // ==========================================
+        // =====================================================
         // COMPLETED DATE
-        // ==========================================
+        // =====================================================
 
         Timestamp completedDate =
                 resultSet.getTimestamp(
@@ -633,9 +783,9 @@ public class BatchRepository {
             );
         }
 
-        // ==========================================
+        // =====================================================
         // TOTAL CHEQUES
-        // ==========================================
+        // =====================================================
 
         int totalCheques =
                 resultSet.getInt(
@@ -649,10 +799,9 @@ public class BatchRepository {
             );
         }
 
-        // ==========================================
+        // =====================================================
         // BATCH STATUS
-        // Database column = batch_status
-        // ==========================================
+        // =====================================================
 
         batch.setBatchStatus(
                 resultSet.getString(

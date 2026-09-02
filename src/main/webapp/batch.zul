@@ -1,4 +1,4 @@
-```xml
+
 <?page title="Batch Capture"?>
 
 <?link rel="stylesheet" type="text/css" href="/css/capture.css"?>
@@ -247,4 +247,4 @@
     </window>
 
 </zk>
-```
+

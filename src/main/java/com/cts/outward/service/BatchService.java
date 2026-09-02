@@ -181,5 +181,10 @@ public class BatchService {
         return batch;
     }
 
+	public void markBatchInProgress(String batchNumber, Integer makerId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 
