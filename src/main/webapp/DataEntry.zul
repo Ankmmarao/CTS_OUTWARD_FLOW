@@ -8,7 +8,7 @@
 
             <!-- HEADER -->
             <hlayout width="100%" style="margin-bottom:15px;border-bottom:2px solid #FF9800;padding-bottom:10px;">
-                <label value="Data Entry amp; Repair" style="font-size:22px;font-weight:bold;color:#FF9800;" />
+                <label value="Data Entry &amp; Repair" style="font-size:22px;font-weight:bold;color:#FF9800;" />
                 <label id="batchIdLabel" value="Batch: " style="font-size:16px;margin-left:20px;font-weight:bold;" />
                 <label id="chequeCounterLabel" value="Cheque 1 of 1" style="font-size:16px;margin-left:20px;font-weight:bold;color:#2196F3;" />
             </hlayout>
