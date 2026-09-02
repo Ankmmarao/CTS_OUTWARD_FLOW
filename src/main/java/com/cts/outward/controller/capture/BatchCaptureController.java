@@ -93,7 +93,7 @@ public class BatchCaptureController
     // OPEN SUBMITTED BATCHES
     // ==========================================
 
-    @Listen("onClick=#submittedBatchesButton")
+    @Listen("onClick=#submittedBatchesMenu")
     public void openSubmittedBatches() {
 
         Executions.sendRedirect(

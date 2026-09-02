@@ -1,149 +1,174 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?page title="Cheque Data Entry & Repair" contentType="text/html;charset=UTF-8"?>
+<?page title="Data Entry" contentType="text/html;charset=UTF-8"?>
+
 <zk>
-    <window id="dataEntryWindow" title="Cheque Data Entry  Repair" border="normal" width="100%" height="100%" 
-            apply="com.cts.outward.controller.maker.DataEntryController">
 
-        <vlayout width="100%" height="100%" style="padding:15px; box-sizing:border-box;">
+    <window
+        id="dataEntryWindow"
+        title="Data Entry"
+        border="normal"
+        width="100%"
+        height="100%"
+        apply="com.cts.outward.controller.maker.DataEntryController">
 
-            <!-- HEADER -->
-            <hlayout width="100%" style="margin-bottom:15px;border-bottom:2px solid #FF9800;padding-bottom:10px;">
-                <label value="Data Entry &amp; Repair" style="font-size:22px;font-weight:bold;color:#FF9800;" />
-                <label id="batchIdLabel" value="Batch: " style="font-size:16px;margin-left:20px;font-weight:bold;" />
-                <label id="chequeCounterLabel" value="Cheque 1 of 1" style="font-size:16px;margin-left:20px;font-weight:bold;color:#2196F3;" />
-            </hlayout>
+        <vlayout
+            width="100%"
+            height="100%"
+            spacing="0"
+            style="padding:20px; box-sizing:border-box;">
 
-            <!-- MAIN CONTENT - 3 COLUMNS -->
-            <hlayout width="100%" height="550px" spacing="15px" style="align-items:stretch;">
+            <!-- ================================================= -->
+            <!-- PAGE HEADER -->
+            <!-- ================================================= -->
 
-                <!-- COLUMN 1: CHEQUE LIST -->
-                <vlayout width="30%" height="100%">
-                    <groupbox width="100%" height="100%" mold="3d">
-                        <caption label="Cheque List" />
-                        <grid id="chequeGrid" width="100%" height="100%">
-                            <columns>
-                                <column label="No" width="30%" />
-                                <column label="Status" width="50%" />
-                                <column label="Action" width="20%" />
-                            </columns>
-                            <rows id="chequeRows" />
-                        </grid>
-                    </groupbox>
-                </vlayout>
+            <vlayout
+                width="100%"
+                spacing="5px"
+                style="margin-bottom:20px;">
 
-                <!-- COLUMN 2: IMAGES -->
-                <vlayout width="35%" height="100%" spacing="10px">
+                <label
+                    value="Data Entry"
+                    style="font-size:28px;
+                           font-weight:bold;
+                           color:#17365d;" />
 
-                    <!-- FRONT IMAGE -->
-                    <groupbox width="100%" height="50%" mold="3d">
-                        <caption label="Front Image" />
-                        <div width="100%" height="100%" style="border:2px solid #ddd; background:#f9f9f9; box-sizing:border-box; padding:5px; text-align:center; overflow:hidden;border-radius:4px;">
-                            <image id="frontImage" width="100%" height="100%" style="object-fit:contain;" />
-                        </div>
-                    </groupbox>
+                <label
+                    value="All cheques available for Data Entry"
+                    style="font-size:14px;
+                           color:#6b7280;" />
 
-                    <!-- BACK IMAGE -->
-                    <groupbox width="100%" height="50%" mold="3d">
-                        <caption label="Back Image" />
-                        <div width="100%" height="100%" style="border:2px solid #ddd; background:#f9f9f9; box-sizing:border-box; padding:5px; text-align:center; overflow:hidden;border-radius:4px;">
-                            <image id="backImage" width="100%" height="100%" style="object-fit:contain;" />
-                        </div>
-                    </groupbox>
+            </vlayout>
 
-                </vlayout>
 
-                <!-- COLUMN 3: DETAILS & ERRORS -->
-                <vlayout width="35%" height="100%" spacing="10px">
+            <!-- ================================================= -->
+            <!-- BATCH INFORMATION -->
+            <!-- ================================================= -->
 
-                    <!-- ERROR SECTION -->
-                    <groupbox width="100%" height="30%" mold="3d" style="border-color:#f44336;">
-                        <caption label="Errors Found" style="color:#f44336;font-weight:bold;" />
-                        <div style="padding:10px;background:#ffebee;border-radius:4px;height:100%;overflow:auto;">
-                            <label id="errorMessage" value="The following fields have Data Entry errors. Please correct and save." style="display:block;color:#c62828;font-weight:bold;" />
-                            <label id="errorFieldLabel" value="-" style="display:block;color:#d32f2f;margin-top:10px;font-weight:bold;" />
-                            <label value="Scanned Value:" style="display:block;margin-top:10px;font-weight:bold;" />
-                            <label id="scannedValueLabel" value="-" style="display:block;color:#666;margin-left:20px;" />
-                            <label value="* Correct all required fields to continue." style="display:block;margin-top:10px;color:#666;font-style:italic;" />
-                        </div>
-                    </groupbox>
+            <groupbox
+                width="100%"
+                height="80px"
+                closable="false"
+                style="background:#eef6ff;
+                       border:1px solid #b8d7ff;
+                       margin-bottom:20px;">
 
-                    <!-- DETAILS SECTION -->
-                    <groupbox width="100%" height="70%" mold="3d">
-                        <caption label="Cheque Details" />
-                        <div style="padding:10px;height:100%;overflow:auto;">
+                <hlayout
+                    width="100%"
+                    height="100%"
+                    valign="middle"
+                    style="padding:15px;
+                           box-sizing:border-box;">
 
-                            <grid width="100%">
-                                <columns>
-                                    <column width="35%" />
-                                    <column width="65%" />
-                                </columns>
-                                <rows>
-                                    <row>
-                                        <label value="Cheque No:" style="font-weight:bold;" />
-                                        <textbox id="chequeNumber" width="100%" readonly="true" style="background:#f5f5f5;" />
-                                    </row>
-                                    <row>
-                                        <label value="Account No:*" style="font-weight:bold;color:#f44336;" />
-                                        <textbox id="accountNumber" width="100%" />
-                                    </row>
-                                    <row>
-                                        <label value="Drawer Name:" style="font-weight:bold;" />
-                                        <textbox id="drawerName" width="100%" />
-                                    </row>
-                                    <row>
-                                        <label value="Amount:" style="font-weight:bold;" />
-                                        <textbox id="amount" width="100%" />
-                                    </row>
-                                    <row>
-                                        <label value="MICR Code:" style="font-weight:bold;" />
-                                        <textbox id="micrCode" width="100%" />
-                                    </row>
-                                    <row>
-                                        <label value="IFSC Code:" style="font-weight:bold;" />
-                                        <textbox id="ifscCode" width="100%" />
-                                    </row>
-                                    <row>
-                                        <label value="Status:" style="font-weight:bold;" />
-                                        <textbox id="status" width="100%" readonly="true" style="background:#f5f5f5;" />
-                                    </row>
-                                    <row>
-                                        <label value="Checked Date:" style="font-weight:bold;" />
-                                        <datebox id="checkedDate" width="100%" />
-                                    </row>
-                                </rows>
-                            </grid>
+                    <label
+                        value="Batch:"
+                        style="font-size:16px;
+                               font-weight:bold;
+                               color:#17365d;
+                               margin-right:10px;" />
 
-                        </div>
-                    </groupbox>
+                    <label
+                        id="batchNumberLabel"
+                        value="-"
+                        style="font-size:16px;
+                               font-weight:bold;
+                               color:#0757c7;" />
 
-                </vlayout>
+                    <label
+                        value="Total Cheques:"
+                        style="font-size:16px;
+                               font-weight:bold;
+                               color:#17365d;
+                               margin-left:40px;
+                               margin-right:10px;" />
 
-            </hlayout>
+                    <label
+                        id="totalChequeLabel"
+                        value="0"
+                        style="font-size:16px;
+                               font-weight:bold;
+                               color:#0757c7;" />
 
-            <!-- BOTTOM - BUTTONS -->
-            <hlayout width="100%" spacing="10px" style="margin-top:15px;padding-top:15px;border-top:2px solid #e0e0e0;justify-content:center;">
+                </hlayout>
 
-                <button id="firstButton" label="First" style="background:#607D8B;color:white;" />
-                <button id="prevButton" label="Prev" style="background:#2196F3;color:white;width:100px;" />
-                
-                <label id="progressLabel" value="1 / 10" style="font-weight:bold;padding:8px 20px;background:#e0e0e0;border-radius:4px;" />
-                
-                <button id="nextButton" label="Next" style="background:#2196F3;color:white;width:100px;" />
-                <button id="lastButton" label="Last" style="background:#607D8B;color:white;" />
+            </groupbox>
 
-                <label value="|" style="font-weight:bold;color:#ccc;padding:0 10px;" />
 
-                <button id="rejectButton" label="Reject" style="background:#f44336;color:white;width:100px;font-weight:bold;" />
-                <button id="saveButton" label="Save" style="background:#4CAF50;color:white;width:100px;font-weight:bold;" />
-                <button id="saveNextButton" label="Save &amp; Next" style="background:#FF9800;color:white;width:120px;font-weight:bold;" />
-                
-                <label value="|" style="font-weight:bold;color:#ccc;padding:0 10px;" />
+            <!-- ================================================= -->
+            <!-- CHEQUE TABLE -->
+            <!-- ================================================= -->
 
-                <button id="backToListButton" label="Back to List" style="background:#795548;color:white;width:130px;" />
+            <groupbox
+                width="100%"
+                height="500px"
+                closable="false"
+                mold="3d">
+
+                <caption
+                    label="Cheque List" />
+
+                <listbox
+                    id="chequeList"
+                    width="100%"
+                    height="100%"
+                    emptyMessage="No cheques found for this batch.">
+
+                    <listhead>
+
+                        <listheader
+                            label="S.No"
+                            width="10%" />
+
+                        <listheader
+                            label="Cheque No"
+                            width="20%" />
+
+                        <listheader
+                            label="Account No"
+                            width="20%" />
+
+                        <listheader
+                            label="Amount"
+                            width="15%" />
+
+                        <listheader
+                            label="Status"
+                            width="15%" />
+
+                        <listheader
+                            label="Action"
+                            width="20%" />
+
+                    </listhead>
+
+                </listbox>
+
+            </groupbox>
+
+
+            <!-- ================================================= -->
+            <!-- FOOTER -->
+            <!-- ================================================= -->
+
+            <hlayout
+                width="100%"
+                height="50px"
+                valign="middle"
+                style="margin-top:15px;
+                       border-top:1px solid #d9d9d9;
+                       padding-top:10px;
+                       box-sizing:border-box;">
+
+                <label
+                    id="chequeCount"
+                    value="Total Cheques: 0"
+                    style="font-size:14px;
+                           font-weight:bold;
+                           color:#17365d;" />
 
             </hlayout>
 
         </vlayout>
 
     </window>
+
 </zk>
